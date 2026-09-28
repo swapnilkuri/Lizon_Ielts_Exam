@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment | LizOn Education</title>
+  <meta name="description" content="LizOn Education payment details. Choose method → pay → send Txn ID or screenshot on WhatsApp." />
+  <meta name="theme-color" content="#0b2a1f" />
+
+  <style>
+    :root{
+      --bg1:#06140f;
+      --bg2:#0b2a1f;
+      --card:#0c2019cc;
+      --card2:#0a1a1480;
+      --line:#1d4a3a;
+      --text:#e9f3ef;
+      --muted:#b7c9c2;
+
+      --gold:#d7b24a;
+      --gold2:#b8922f;
+      --gold-strong:#e2c26a;
+
+      --teal:#25a58a;
+      --blue:#3b82f6;
+      --pink:#ff6fb1;
+      --orange:#ffb020;
+      --purple:#a78bfa;
+
+      --soft: 0 12px 40px rgba(0,0,0,.35);
+      --shadow2: 0 18px 60px rgba(0,0,0,.45);
+
+      --radius: 18px;
+      --radius2: 22px;
+      --max: 1120px;
+    }
+
+    [data-theme="light"]{
+      --bg1:#f3fbf7;
+      --bg2:#e9f6f0;
+      --card:#ffffffcc;
+      --card2:#ffffffa6;
+      --line:#cfe6dc;
+      --text:#0b2a1f;
+      --muted:#335e52;
+
+      --soft: 0 10px 28px rgba(0,0,0,.10);
+      --shadow2: 0 16px 46px rgba(0,0,0,.14);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 15% 10%, rgba(215,178,74,.12), transparent 55%),
+        radial-gradient(700px 520px at 85% 0%, rgba(37,165,138,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+    a{ color:inherit; text-decoration:none; }
+    button{ font:inherit; }
+    img{ max-width:100%; display:block; }
+
+    .wrap{ width: min(var(--max), calc(100% - 32px)); margin:0 auto; }
+
+    /* Header */
+    .header{
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(6,20,15,.82), rgba(6,20,15,.35));
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    [data-theme="light"] .header{
+      background: linear-gradient(180deg, rgba(243,251,247,.88), rgba(243,251,247,.55));
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .head-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:12px 0;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+    .brand-txt{ line-height:1.15; }
+    .brand-txt b{ display:block; font-size:14px; letter-spacing:.2px; }
+    .brand-txt span{ display:block; font-size:12px; color:var(--muted); margin-top:2px; }
+
+    .desktop-nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      align-items:center;
+    }
+    .chip{
+      padding:8px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: 13px;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.07); }
+    [data-theme="light"] .chip{ border:1px solid rgba(0,0,0,.10); background: rgba(255,255,255,.72); }
+
+    .menu-btn{
+      width:44px; height:44px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow: var(--soft);
+      flex: 0 0 auto;
+    }
+    .menu-btn svg{ width:22px; height:22px; }
+
+    section{ padding: 22px 0; }
+
+    .card{
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    [data-theme="light"] .card{
+      border:1px solid rgba(0,0,0,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.76));
+    }
+    .card-pad{ padding: 18px; }
+
+    .kicker{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing:.2px;
+    }
+    .k-dot{
+      width:10px; height:10px;
+      border-radius: 99px;
+      background: radial-gradient(circle at 30% 30%, rgba(215,178,74,1), rgba(37,165,138,1));
+      box-shadow: 0 0 0 3px rgba(215,178,74,.14);
+    }
+
+    .title{
+      margin: 10px 0 8px;
+      font-size: clamp(22px, 3vw, 34px);
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+    .lead{
+      margin: 0;
+      font-size: 14.5px;
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 75ch;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media (max-width: 920px){
+      .desktop-nav{ display:none; }
+      .brand{ min-width: unset; }
+    }
+    @media (max-width: 860px){
+      .grid-2{ grid-template-columns: 1fr; }
+      .wrap{ width: calc(100% - 24px); }
+    }
+
+    .mini-card{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      padding: 14px;
+      box-shadow: var(--soft);
+    }
+    [data-theme="light"] .mini-card{
+      border:1px solid rgba(0,0,0,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.76));
+    }
+    .mini-title{ margin:0 0 6px; font-weight: 950; letter-spacing: -.2px; }
+    .mini-text{ margin:0; color: var(--muted); font-size: 13.5px; line-height: 1.55; }
+
+    .btn{
+      padding: 10px 14px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-weight: 900;
+      font-size: 13.5px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height: 40px;
+      transition: transform .12s ease, filter .12s ease, background .12s ease;
+      box-shadow: var(--soft);
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+    .btn:active{ transform: translateY(0px); }
+
+    .btn-ghost{
+      box-shadow:none;
+      background: transparent;
+      border-color: rgba(255,255,255,.10);
+    }
+    [data-theme="light"] .btn-ghost{ border-color: rgba(0,0,0,.10); }
+
+    .cta-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top: 12px; }
+    .muted{ color: var(--muted); }
+
+    /* Payment buttons: different color each */
+    .pay-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 860px){ .pay-grid{ grid-template-columns: 1fr; } }
+
+    .pay-btn{
+      width:100%;
+      text-align:left;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding: 14px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      cursor:pointer;
+      box-shadow: var(--soft);
+      transition: transform .12s ease, filter .12s ease;
+      color: var(--text);
+    }
+    .pay-btn:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+
+    .pay-left b{ display:block; font-size:14px; }
+    .pay-left span{ display:block; margin-top:4px; font-size:12.5px; color: var(--muted); }
+
+    .pay-ico{
+      width:44px; height:44px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+      display:grid;
+      place-items:center;
+      flex: 0 0 auto;
+    }
+    .pay-ico svg{ width:22px; height:22px; }
+
+    .c-teal{ border-color: rgba(37,165,138,.28); background: linear-gradient(180deg, rgba(37,165,138,.10), rgba(255,255,255,.01)); }
+    .c-gold{ border-color: rgba(215,178,74,.28); background: linear-gradient(180deg, rgba(215,178,74,.10), rgba(255,255,255,.01)); }
+    .c-blue{ border-color: rgba(110,170,255,.28); background: linear-gradient(180deg, rgba(110,170,255,.10), rgba(255,255,255,.01)); }
+    .c-pink{ border-color: rgba(255,160,210,.22); background: linear-gradient(180deg, rgba(255,160,210,.08), rgba(255,255,255,.01)); }
+    .c-orange{ border-color: rgba(255,176,32,.22); background: linear-gradient(180deg, rgba(255,176,32,.08), rgba(255,255,255,.01)); }
+    .c-purple{ border-color: rgba(167,139,250,.22); background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(255,255,255,.01)); }
+
+    /* Overlay sheet */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(6px);
+      z-index:50;
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 14px;
+    }
+    .overlay.show{ display:flex; }
+
+    .sheet{
+      width:min(760px, 100%);
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(12,32,25,.96), rgba(6,20,15,.92));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      transform: translateY(10px);
+      animation: sheetIn .16s ease forwards;
+    }
+    [data-theme="light"] .sheet{
+      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.86));
+      border:1px solid rgba(0,0,0,.10);
+    }
+    @keyframes sheetIn{ to{ transform: translateY(0); } }
+
+    .sheet-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    [data-theme="light"] .sheet-head{ border-bottom:1px solid rgba(0,0,0,.08); }
+    .sheet-head b{ font-size: 14px; letter-spacing:.2px; }
+    .x{
+      width:38px; height:38px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow: var(--soft);
+      flex:0 0 auto;
+      font-weight: 950;
+    }
+    [data-theme="light"] .x{ border:1px solid rgba(0,0,0,.10); background: rgba(0,0,0,.04); }
+
+    .sheet-body{ padding: 14px; max-height: 74vh; overflow:auto; }
+
+    .kv{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .kv .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    [data-theme="light"] .kv .row{ border:1px solid rgba(0,0,0,.10); background: rgba(255,255,255,.72); }
+    .kv .row b{ font-size: 13px; }
+    .kv .row code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    [data-theme="light"] .kv .row code{ background: rgba(0,0,0,.05); border:1px solid rgba(0,0,0,.10); }
+
+    .qr{
+      border-radius: 18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+      box-shadow: var(--soft);
+    }
+
+    /* Footer */
+    .footer{ padding: 26px 0 96px; }
+    .footer-columns{
+      display:grid;
+      grid-template-columns: 1.1fr 1.4fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 920px){ .footer-columns{ grid-template-columns: 1fr; } }
+    .footer-title{
+      margin:0 0 10px;
+      font-size: 14px;
+      letter-spacing:.2px;
+      font-weight: 950;
+    }
+    .btn-tiny{
+      padding: 8px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: var(--soft);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 34px;
+    }
+    .footer-links{ display:flex; flex-wrap:wrap; gap:10px; }
+    .footer-small{
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+    .rule{ height:1px; background: rgba(255,255,255,.10); margin: 14px 0; }
+    [data-theme="light"] .rule{ background: rgba(0,0,0,.10); }
+    .socials{ display:flex; flex-wrap:wrap; gap:10px; }
+
+    /* Bottom bar */
+    .bottom-bar{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      z-index:25;
+      padding:10px 12px;
+      background: linear-gradient(180deg, rgba(6,20,15,.0), rgba(6,20,15,.92));
+      backdrop-filter: blur(10px);
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    [data-theme="light"] .bottom-bar{
+      background: linear-gradient(180deg, rgba(243,251,247,0), rgba(243,251,247,.94));
+      border-top:1px solid rgba(0,0,0,.08);
+    }
+    .bottom-row{
+      width:min(var(--max), calc(100% - 24px));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .bottom-row b{ font-size: 13px; }
+    .bottom-row .muted{ font-size:12.5px; }
+
+    /* Theme toggle */
+    .theme-mini{
+      position:fixed;
+      right:16px;
+      bottom: 92px;
+      width:40px;
+      height:40px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      box-shadow: var(--shadow2);
+      display:grid;
+      place-items:center;
+      z-index:35;
+      cursor:pointer;
+    }
+    .theme-mini svg{ width:18px; height:18px; opacity:.95; }
+
+    /* iPhone-like floating menu */
+    .overlay.menu-float{
+      align-items:flex-start;
+      justify-content:flex-end;
+      padding-top: 70px;
+    }
+    .sheet.float{
+      width: min(360px, calc(100vw - 28px));
+      border-radius: 22px;
+      transform: translateY(-6px) scale(.98);
+      opacity:.98;
+      animation: floatIn .16s ease forwards;
+    }
+    @keyframes floatIn{ to{ transform: translateY(0) scale(1); opacity:1; } }
+    .list{ display:flex; flex-direction:column; gap:10px; }
+    .item{
+      padding: 12px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      font-weight: 900;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    [data-theme="light"] .item{ border:1px solid rgba(0,0,0,.10); background: rgba(255,255,255,.72); }
+    .item span{ font-weight: 800; color: var(--muted); font-size: 12px; }
+    .sep{ height:1px; background: rgba(255,255,255,.10); margin: 12px 0; }
+    [data-theme="light"] .sep{ background: rgba(0,0,0,.10); }
+
+    /* toast */
+    .toast{
+      position:fixed;
+      left:50%;
+      transform: translateX(-50%);
+      bottom: 152px;
+      z-index:80;
+      padding:10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.30);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow2);
+      font-weight: 900;
+      font-size: 12.5px;
+      display:none;
+    }
+    [data-theme="light"] .toast{ background: rgba(255,255,255,.75); border:1px solid rgba(0,0,0,.10); }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="wrap">
+      <div class="head-row">
+        <a class="brand" href="index.html" aria-label="LizOn Education Home">
+          <div class="brand-txt">
+            <b>LizOn Education</b>
+            <span>Payment Details</span>
+          </div>
+        </a>
+
+        <nav class="desktop-nav" aria-label="Top navigation">
+          <a class="chip" href="index.html">Home</a>
+          <a class="chip" href="ielts.html">IELTS</a>
+          <a class="chip" href="pte.html">PTE</a>
+          <a class="chip" href="#payment">Payment</a>
+          <a class="chip" href="#help">Confirm</a>
+        </nav>
+
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MENU SHEET -->
+  <div class="overlay menu-float" id="menuSheet" aria-hidden="true">
+    <div class="sheet float" role="dialog" aria-modal="true" aria-label="Navigate">
+      <div class="sheet-head">
+        <b>Menu</b>
+        <button class="x" id="menuClose" type="button" aria-label="Close">✕</button>
+      </div>
+      <div class="sheet-body">
+        <div class="list">
+          <a class="item" href="index.html">Home <span>→</span></a>
+          <a class="item" href="pte.html">PTE <span>→</span></a>
+          <a class="item" href="ielts.html">IELTS <span>→</span></a>
+          <a class="item" href="#payment">Payment <span>→</span></a>
+          <a class="item" href="#help">Confirm <span>→</span></a>
+          <a class="item" href="studyabroad.html">Study Abroad <span>→</span></a>
+        </div>
+        <div class="sep"></div>
+        <div class="cta-row" style="margin-top:0;">
+          <a class="btn btn-ghost" href="https://maps.app.goo.gl/JC9sikzCiSsQrNnH9" target="_blank" rel="noopener">Open Map</a>
+          <a class="btn btn-ghost" href="https://wa.me/8801611611139?text=Assalamu%20Alaikum%2C%20payment%20confirm%20korte%20chai.%20Txn%20ID%20%2Fscreenshot%20pathabo.%20Confirm%20korben%3F" target="_blank" rel="noopener">Talk with LizOn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAYMENT DETAIL SHEET -->
+  <div class="overlay" id="paySheet" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Payment detail">
+      <div class="sheet-head">
+        <b id="paySheetTitle">Payment</b>
+        <button class="x" id="payClose" type="button" aria-label="Close">✕</button>
+      </div>
+      <div class="sheet-body">
+        <div class="mini-card">
+          <p class="mini-title" id="paySheetKicker" style="margin:0 0 6px;">Follow this</p>
+          <p class="mini-text" id="paySheetText">
+            Choose method → pay → screenshot/Txn ID → WhatsApp e pathan.
+          </p>
+
+          <div class="kv" id="payKV"></div>
+
+          <div class="cta-row" style="margin-top:12px;">
+            <button class="btn btn-ghost" id="copyOne" type="button">Copy</button>
+            <button class="btn btn-ghost" id="copyAll" type="button">Copy all</button>
+            <a class="btn btn-ghost" id="waConfirm" href="#" target="_blank" rel="noopener">Send Screenshot / Txn ID</a>
+          </div>
+        </div>
+
+        <div class="mini-card" style="margin-top:12px;">
+          <p class="mini-title" style="margin:0 0 6px;">QR (optional)</p>
+          <p class="mini-text" style="margin:0 0 10px;">Jodi apnar side-e QR scan easier hoy — use korte paren.</p>
+          <!-- Put your QR image here -->
+          <div class="qr">
+            <img src="assets/payment-qr.png" alt="LizOn Education Payment QR" loading="lazy" />
+          </div>
+          <p class="mini-text" style="margin-top:10px;">
+            <span style="opacity:.9;">(If this file name differs in your GitHub assets, just rename it or update the src.)</span>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied</div>
+
+  <main class="wrap">
+
+    <!-- HERO -->
+    <section>
+      <div class="card">
+        <div class="card-pad">
+          <div class="kicker"><span class="k-dot"></span>Designed for Desired Score</div>
+          <h1 class="title">Payment Details — <span style="color:var(--gold-strong)">tap & copy</span>.</h1>
+          <p class="lead">
+            Rule simple: <b>choose method</b> → <b>pay</b> → <b>Txn ID / screenshot</b> WhatsApp e pathan.
+            Confirm hole amra admission/batch/portal direction ekshathe diye dibo.
+          </p>
+
+          <div class="cta-row" style="margin-top:14px;">
+            <button class="btn btn-ghost" id="btnCopyAllTop" type="button">Copy all payment info</button>
+            <a class="btn btn-ghost"
+               href="https://wa.me/8801611611139?text=Assalamu%20Alaikum%2C%20payment%20confirm%20korte%20chai.%20Txn%20ID%20%2Fscreenshot%20pathabo.%20Confirm%20korben%3F"
+               target="_blank" rel="noopener">Talk with LizOn</a>
+          </div>
+
+          <p class="muted" style="margin:10px 0 0;font-size:13px;">
+            Helpline (WhatsApp): <b>01611611139</b>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAYMENT -->
+    <section id="payment">
+      <h2 style="margin:0 0 10px; font-size:18px; letter-spacing:-.2px;">Choose your payment method</h2>
+      <p class="muted" style="margin:0 0 12px;">
+        Prottek method-er button er color alada — so confusion kom. Tap korlei details + copy option.
+      </p>
+
+      <div class="pay-grid" aria-label="Payment methods">
+        <button class="pay-btn c-teal" type="button" data-pay="bkash_merchant">
+          <div class="pay-left">
+            <b>bKash Merchant (Make Payment)</b>
+            <span>Merchant: <b>01611611139</b></span>
+          </div>
+          <div class="pay-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20"></path><path d="M5 7h10a4 4 0 1 1 0 8H7a4 4 0 0 0 0 8h12"></path>
+            </svg>
+          </div>
+        </button>
+
+        <button class="pay-btn c-gold" type="button" data-pay="bkash_personal">
+          <div class="pay-left">
+            <b>bKash Personal (Send Money)</b>
+            <span>Personal: <b>01337533979</b></span>
+          </div>
+          <div class="pay-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 7h-9"></path><path d="M20 12h-9"></path><path d="M20 17h-9"></path><path d="M7 7l-3 3 3 3"></path>
+            </svg>
+          </div>
+        </button>
+
+        <button class="pay-btn c-blue" type="button" data-pay="rocket">
+          <div class="pay-left">
+            <b>Rocket Personal (Send Money)</b>
+            <span>Rocket: <b>01337533979</b></span>
+          </div>
+          <div class="pay-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4.5 16.5 8 13l3 3-3.5 3.5a2 2 0 0 1-3 0 2 2 0 0 1 0-3Z"></path>
+              <path d="M14 10l-4 4"></path><path d="M16 8l-2 2"></path><path d="M19 5c-3 0-6 1-8 3l5 5c2-2 3-5 3-8Z"></path>
+            </svg>
+          </div>
+        </button>
+
+        <button class="pay-btn c-pink" type="button" data-pay="nagad">
+          <div class="pay-left">
+            <b>Nagad Personal (Send Money)</b>
+            <span>Nagad: <b>01337533979</b></span>
+          </div>
+          <div class="pay-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2 2 7l10 5 10-5-10-5Z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+        </button>
+
+        <button class="pay-btn c-purple" type="button" data-pay="upay">
+          <div class="pay-left">
+            <b>Upay Personal (Send Money)</b>
+            <span>Upay: <b>01889993896</b></span>
+          </div>
+          <div class="pay-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.65-7 10-7 10Z"></path>
+            </svg>
+          </div>
+        </button>
+
+        <button class="pay-btn c-orange" type="button" data-pay="bank">
+          <div class="pay-left">
+            <b>Bank Transfer (DBBL)</b>
+            <span>Account: <b>2211510117789</b></span>
+          </div>
+          <div class="pay-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 10h18"></path><path d="M5 10v10"></path><path d="M19 10v10"></path><path d="M9 10v10"></path><path d="M15 10v10"></path><path d="M2 20h20"></path><path d="M12 2 2 7h20L12 2Z"></path>
+            </svg>
+          </div>
+        </button>
+
+        <button class="pay-btn c-blue" type="button" data-pay="visa">
+          <div class="pay-left">
+            <b>Visa Card Transfer (IFIC/Brac)</b>
+            <span>Card: <b>4777920004855617</b> (Brac Bank)</span>
+          </div>
+          <div class="pay-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M3 10h18"></path>
+            </svg>
+          </div>
+        </button>
+      </div>
+
+      <div class="cta-row" style="margin-top:14px;">
+        <a class="btn btn-ghost"
+           href="https://wa.me/8801611611139?text=Assalamu%20Alaikum%2C%20payment%20complete%20kore%20Txn%20ID%20%2Fscreenshot%20pathacchi.%20Please%20confirm."
+           target="_blank" rel="noopener">Send Screenshot / Txn ID</a>
+        <button class="btn btn-ghost" id="btnCopyAllMid" type="button">Copy all</button>
+      </div>
+    </section>
+
+    <!-- HELP -->
+    <section id="help">
+      <div class="grid-2" style="align-items:start;">
+        <div class="mini-card" style="border-color: rgba(215,178,74,.28); background: linear-gradient(180deg, rgba(215,178,74,.10), rgba(255,255,255,.01));">
+          <p class="mini-title">After payment — what to send?</p>
+          <p class="mini-text">
+            WhatsApp e just 2 ta জিনিস:
+            <br/>• <b>Transaction ID</b> (or screenshot)
+            <br/>• <b>Your name + course</b> (PTE / IELTS / others)
+            <br/><br/>
+            Confirm hole next steps: batch/group + portal.
+          </p>
+          <div class="cta-row" style="margin-top:12px;">
+            <a class="btn btn-ghost"
+               href="https://wa.me/8801611611139?text=Assalamu%20Alaikum%2C%20payment%20complete.%20Name%3A%20____%20%7C%20Course%3A%20____%20%7C%20Txn%20ID%3A%20____"
+               target="_blank" rel="noopener">Open WhatsApp format</a>
+          </div>
+        </div>
+
+        <div class="mini-card" style="border-color: rgba(37,165,138,.28); background: linear-gradient(180deg, rgba(37,165,138,.10), rgba(255,255,255,.01));">
+          <p class="mini-title">Need quick confirmation?</p>
+          <p class="mini-text">
+            Helpline: <b>01611611139</b><br/>
+            Location: 51, Budhha Mandir Basabo (Beside Morning Bell School & Brac office), Dhaka 1214
+          </p>
+          <div class="cta-row" style="margin-top:12px;">
+            <a class="btn btn-ghost" href="https://maps.app.goo.gl/JC9sikzCiSsQrNnH9" target="_blank" rel="noopener">Open Map</a>
+            <a class="btn btn-ghost"
+               href="https://wa.me/8801611611139?text=Assalamu%20Alaikum%2C%20payment%20confirm%20korte%20chai.%20Please%20guide."
+               target="_blank" rel="noopener">Talk with LizOn</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <section class="footer">
+      <div class="card">
+        <div class="card-pad">
+          <div class="footer-columns">
+            <div>
+              <h3 class="footer-title">Quick Links</h3>
+              <div class="footer-links">
+                <a class="btn-tiny" href="pte.html">PTE</a>
+                <a class="btn-tiny" href="ielts.html">IELTS</a>
+                <a class="btn-tiny" href="#payment">Payment</a>
+                <a class="btn-tiny" href="#help">Confirm</a>
+              </div>
+
+              <p class="footer-small" style="margin:10px 0 0;">
+                Payment rule: <b>pay</b> → <b>send Txn ID/screenshot</b> → <b>confirmed</b>.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="footer-title">Contact & Location</h3>
+              <p class="footer-small" style="margin:0 0 10px;">
+                <b>Address:</b> 51, Budhha Mandir Basabo (Beside Morning Bell School & Brac office), Dhaka 1214<br/>
+                <b>IELTS/PTE Helpline:</b> 01611611139<br/>
+                <b>Study Abroad/Visa Processing:</b> 01608881545
+              </p>
+
+              <div class="footer-links">
+                <a class="btn btn-ghost" href="https://maps.app.goo.gl/JC9sikzCiSsQrNnH9" target="_blank" rel="noopener">Open Map</a>
+                <a class="btn btn-ghost" href="https://wa.me/8801611611139" target="_blank" rel="noopener">WhatsApp</a>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="footer-title">Social Media</h3>
+              <div class="socials">
+                <a class="btn btn-ghost" href="https://www.facebook.com/lizoneducation" target="_blank" rel="noopener">Facebook</a>
+                <a class="btn btn-ghost" href="https://www.youtube.com/@AskJoyNowQ" target="_blank" rel="noopener">YouTube</a>
+                <a class="btn btn-ghost" href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+              </div>
+              <div class="rule"></div>
+              <p class="footer-small" style="margin:0;">© 2026 myLizOn.com | LizOn Education</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom guidance bar -->
+  <div class="bottom-bar" role="contentinfo">
+    <div class="bottom-row">
+      <div>
+        <b>Payment done?</b> <span class="muted">Send Txn ID / screenshot on WhatsApp.</span>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button class="btn btn-ghost" style="min-height:34px; padding:8px 12px;" id="btnOpenAll">Copy all</button>
+        <a class="btn btn-ghost" style="min-height:34px; padding:8px 12px;"
+           href="https://wa.me/8801611611139?text=Assalamu%20Alaikum%2C%20payment%20complete.%20Txn%20ID%20%2Fscreenshot%20pathacchi.%20Please%20confirm."
+           target="_blank" rel="noopener">WhatsApp Confirm</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme toggle -->
+  <button class="theme-mini" id="themeBtn" type="button" aria-label="Toggle theme">
+    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 3v2M12 19v2M4.2 6.2l1.4 1.4M18.4 17.4l1.4 1.4M3 12h2M19 12h2M6.2 19.8l1.4-1.4M17.4 6.6l1.4-1.4"></path>
+      <circle cx="12" cy="12" r="4"></circle>
+    </svg>
+  </button>
+
+  <script>
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
+
+    function lockScroll(lock){ document.body.style.overflow = lock ? 'hidden' : ''; }
+
+    function openOverlay(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.add('show');
+      el.setAttribute('aria-hidden','false');
+      lockScroll(true);
+    }
+    function closeOverlay(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.remove('show');
+      el.setAttribute('aria-hidden','true');
+      lockScroll(false);
+    }
+
+    // Menu
+    const menuSheet = $('#menuSheet');
+    $('#menuBtn').addEventListener('click', ()=> openOverlay('menuSheet'));
+    $('#menuClose').addEventListener('click', ()=> closeOverlay('menuSheet'));
+    menuSheet.addEventListener('click', (e)=>{ if(e.target === menuSheet) closeOverlay('menuSheet'); });
+
+    // Theme toggle
+    const themeBtn = $('#themeBtn');
+    const root = document.documentElement;
+    function setTheme(t){
+      root.setAttribute('data-theme', t);
+      localStorage.setItem('mylizon_theme', t);
+    }
+    setTheme(localStorage.getItem('mylizon_theme') || 'dark');
+    themeBtn.addEventListener('click', ()=>{
+      const cur = root.getAttribute('data-theme') || 'dark';
+      setTheme(cur === 'dark' ? 'light' : 'dark');
+    });
+
+    // Payment data (from your screenshot)
+    const PAY = {
+      bkash_merchant: {
+        title: "bKash Merchant (Make Payment)",
+        kicker: "Use bKash app → Payment → Merchant",
+        steps: [
+          ["Merchant No", "01611611139"],
+          ["Note", "Payment er por Txn ID / screenshot pathan"]
+        ],
+        wa: "Assalamu Alaikum, bKash Merchant diye payment complete. Txn ID / screenshot pathacchi. Please confirm."
+      },
+      bkash_personal: {
+        title: "bKash Personal (Send Money)",
+        kicker: "Use bKash app → Send Money",
+        steps: [
+          ["Personal No", "01337533979"],
+          ["Note", "Payment er por Txn ID / screenshot pathan"]
+        ],
+        wa: "Assalamu Alaikum, bKash Personal (Send Money) diye payment complete. Txn ID / screenshot pathacchi. Please confirm."
+      },
+      rocket: {
+        title: "Rocket Personal (Send Money)",
+        kicker: "Use Rocket app → Send Money",
+        steps: [
+          ["Rocket No", "01337533979"],
+          ["Note", "Payment er por Txn ID / screenshot pathan"]
+        ],
+        wa: "Assalamu Alaikum, Rocket diye payment complete. Txn ID / screenshot pathacchi. Please confirm."
+      },
+      nagad: {
+        title: "Nagad Personal (Send Money)",
+        kicker: "Use Nagad app → Send Money",
+        steps: [
+          ["Nagad No", "01337533979"],
+          ["Note", "Payment er por Txn ID / screenshot pathan"]
+        ],
+        wa: "Assalamu Alaikum, Nagad diye payment complete. Txn ID / screenshot pathacchi. Please confirm."
+      },
+      upay: {
+        title: "Upay Personal (Send Money)",
+        kicker: "Use Upay app → Send Money",
+        steps: [
+          ["Upay No", "01889993896"],
+          ["Note", "Payment er por Txn ID / screenshot pathan"]
+        ],
+        wa: "Assalamu Alaikum, Upay diye payment complete. Txn ID / screenshot pathacchi. Please confirm."
+      },
+      bank: {
+        title: "Bank Transfer (DBBL)",
+        kicker: "Account transfer / deposit",
+        steps: [
+          ["Bank", "DBBL (Dutch-Bangla Bank Limited)"],
+          ["Account No", "2211510117789"],
+          ["Account Name", "SHUVA SARKER JOY"],
+          ["Branch", "Manda"],
+          ["Routing", "090262874"]
+        ],
+        wa: "Assalamu Alaikum, DBBL bank transfer diye payment complete. Txn ID / screenshot pathacchi. Please confirm."
+      },
+      visa: {
+        title: "Visa Card Transfer",
+        kicker: "Card transfer",
+        steps: [
+          ["Card No", "4777920004855617"],
+          ["Bank", "Brac Bank"]
+        ],
+        wa: "Assalamu Alaikum, Visa card transfer diye payment complete. Txn ID / screenshot pathacchi. Please confirm."
+      }
+    };
+
+    const paySheet = $('#paySheet');
+    const paySheetTitle = $('#paySheetTitle');
+    const paySheetKicker = $('#paySheetKicker');
+    const paySheetText = $('#paySheetText');
+    const payKV = $('#payKV');
+    const waConfirm = $('#waConfirm');
+    const copyOne = $('#copyOne');
+    const copyAll = $('#copyAll');
+    const toast = $('#toast');
+
+    let currentKey = null;
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(()=> toast.style.display='none', 1200);
+    }
+
+    function buildKV(rows){
+      payKV.innerHTML = "";
+      rows.forEach(([k,v])=>{
+        const d = document.createElement('div');
+        d.className = 'row';
+        d.innerHTML = `<b>${k}</b><code>${v}</code>`;
+        payKV.appendChild(d);
+      });
+    }
+
+    function openPay(key){
+      const info = PAY[key];
+      if(!info) return;
+      currentKey = key;
+
+      paySheetTitle.textContent = info.title;
+      paySheetKicker.textContent = info.kicker;
+      paySheetText.textContent = "Choose method → pay → Txn ID / screenshot → WhatsApp e pathan.";
+
+      buildKV(info.steps);
+
+      const wa = "https://wa.me/8801611611139?text=" + encodeURIComponent(info.wa);
+      waConfirm.href = wa;
+      waConfirm.textContent = "Send Screenshot / Txn ID";
+
+      copyOne.textContent = "Copy";
+      openOverlay('paySheet');
+    }
+
+    // Open sheet on click
+    $$('[data-pay]').forEach(btn=>{
+      btn.addEventListener('click', ()=> openPay(btn.getAttribute('data-pay')));
+    });
+
+    // Close sheet
+    $('#payClose').addEventListener('click', ()=> closeOverlay('paySheet'));
+    paySheet.addEventListener('click', (e)=>{ if(e.target === paySheet) closeOverlay('paySheet'); });
+
+    // Copy one (best main number)
+    function bestCopyText(key){
+      const info = PAY[key];
+      if(!info) return "";
+      // Prefer first numeric-ish value (merchant/personal/account/card)
+      const primary = info.steps.find(r => /No|Account|Card|Merchant|Rocket|Nagad|Upay/i.test(r[0])) || info.steps[0];
+      return `${info.title}\n${primary[0]}: ${primary[1]}\nWhatsApp: 01611611139`;
+    }
+
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt);
+        showToast("Copied");
+        return true;
+      }catch(e){
+        showToast("Copy failed");
+        return false;
+      }
+    }
+
+    copyOne.addEventListener('click', async ()=>{
+      if(!currentKey) return;
+      await copyText(bestCopyText(currentKey));
+    });
+
+    // Copy all
+    function allPaymentText(){
+      return [
+        "LizOn Education — Payment Details",
+        "",
+        "bKash Merchant (Make Payment): 01611611139",
+        "bKash Personal (Send Money): 01337533979",
+        "Rocket Personal (Send Money): 01337533979",
+        "Nagad Personal (Send Money): 01337533979",
+        "Upay Personal (Send Money): 01889993896",
+        "",
+        "Bank (DBBL)",
+        "Account No: 2211510117789",
+        "Account Name: SHUVA SARKER JOY",
+        "Branch: Manda",
+        "Routing: 090262874",
+        "",
+        "Visa Card Transfer",
+        "Card No: 4777920004855617 (Brac Bank)",
+        "",
+        "After payment: send Txn ID / screenshot to WhatsApp: 01611611139",
+        "WhatsApp link: https://wa.me/8801611611139"
+      ].join("\n");
+    }
+
+    copyAll.addEventListener('click', async ()=>{ await copyText(allPaymentText()); });
+
+    // Top + bottom copy all
+    $('#btnCopyAllTop').addEventListener('click', async ()=>{ await copyText(allPaymentText()); });
+    $('#btnCopyAllMid').addEventListener('click', async ()=>{ await copyText(allPaymentText()); });
+    $('#btnOpenAll').addEventListener('click', async ()=>{ await copyText(allPaymentText()); });
+  </script>
+</body>
+</html>  

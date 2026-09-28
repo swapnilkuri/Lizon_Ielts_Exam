@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Writing Practice Tests Collection — LizOn Education</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070B0E;
+      --bg-card: rgba(18, 26, 33, 0.7);
+      --bg-card-hover: rgba(26, 37, 47, 0.9);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(16, 185, 129, 0.4);
+      --accent-emerald: #10B981;
+      --btn-take-bg: #0D7A73;
+      --btn-take-hover: #119990;
+      --btn-practice-bg: rgba(255, 255, 255, 0.04);
+      --btn-practice-hover: rgba(255, 255, 255, 0.09);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+      --highlight-emerald: #34D399;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 850px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.09) 0%, rgba(7, 11, 14, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+/* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(7, 11, 14, 0.85);
+    }
+    .nav-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #FFF;
+      font-weight: 800;
+      font-size: 1.15rem;
+      white-space: nowrap;
+    }
+    .logo-badge {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-links {
+      display: flex;
+      gap: 18px; /* Reduced gap so all items fit in one row */
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.85rem; /* Balanced size */
+      font-weight: 500;
+      white-space: nowrap; /* Forces text to stay on a single line */
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #FFF;
+    }
+
+    /* Navbar Action Buttons */
+    .nav-auth-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 9px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #FFF;
+    }
+
+    .btn-primary {
+      background: var(--accent-emerald);
+      color: #042F20;
+    }
+    .btn-primary:hover {
+      background: #34D399;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.3);
+      color: #042F20;
+    }
+
+    /* Header Section */
+    .header-section {
+      padding: 50px 0 20px;
+    }
+    .header-section h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 12px;
+    }
+    .header-section p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 950px;
+      line-height: 1.6;
+    }
+
+    /* Category Filter Pills */
+    .category-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      margin-bottom: 36px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .cat-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .cat-btn:hover, .cat-btn.active {
+      color: #FFF;
+      border-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.12);
+    }
+
+    /* Series Headings */
+    .series-heading {
+      margin-top: 48px;
+      margin-bottom: 8px;
+    }
+    .series-heading h2 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #FFF;
+      letter-spacing: -0.5px;
+    }
+    .series-heading p {
+      color: var(--text-muted);
+      font-size: 0.925rem;
+      max-width: 950px;
+      line-height: 1.6;
+      margin-top: 6px;
+      margin-bottom: 24px;
+    }
+
+    /* 3-Column Grid */
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-bottom: 40px;
+    }
+
+    .test-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 26px 22px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .test-box:hover {
+      border-color: var(--border-active);
+      transform: translateY(-3px);
+      background: var(--bg-card-hover);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .test-title {
+      color: #F8FAFC;
+      font-size: 1.125rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 22px;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: -0.2px;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-top: auto;
+      position: relative;
+    }
+
+    .btn-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 9px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-take-test {
+      background: var(--btn-take-bg);
+      color: #FFFFFF;
+    }
+    .btn-take-test:hover {
+      background: var(--btn-take-hover);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-practice-section {
+      background: var(--btn-practice-bg);
+      border: 1px solid var(--border-subtle);
+      color: #CBD5E1;
+    }
+    .btn-practice-section:hover {
+      background: var(--btn-practice-hover);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: #FFF;
+    }
+
+    .section-divider {
+      border: 0;
+      height: 1px;
+      background: var(--border-subtle);
+      margin: 60px 0 20px;
+    }
+
+    /* 2-Page Pagination */
+    .pagination-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 60px;
+    }
+    .page-btn {
+      min-width: 42px;
+      height: 42px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .page-btn:hover {
+      border-color: var(--accent-emerald);
+      color: #FFF;
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .page-btn.active {
+      border-color: var(--accent-emerald);
+      color: #FFF;
+      background: rgba(16, 185, 129, 0.2);
+      font-weight: 800;
+    }
+
+    /* Modal Popup */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 7, 10, 0.82);
+      backdrop-filter: blur(14px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #0D141C;
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px 24px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+      position: relative;
+      animation: modalSlide 0.2s ease-out;
+    }
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-close-btn:hover {
+      color: #FFF;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .modal-header h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #FFF;
+      line-height: 1.35;
+      margin-bottom: 6px;
+      padding-right: 32px;
+    }
+    .modal-subtitle {
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--highlight-emerald);
+      margin-bottom: 18px;
+    }
+
+    .modal-item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 22px;
+    }
+    .modal-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .modal-item:hover {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: var(--border-active);
+      transform: translateX(3px);
+    }
+    .modal-item .q-range {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .modal-item .q-type {
+      font-weight: 700;
+      color: #FFF;
+    }
+    .modal-divider-text {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 950px) {
+      .test-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .test-grid { grid-template-columns: 1fr; }
+      .header-section h1 { font-size: 1.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- Navigation -->
+<nav>
+  <div class="container nav-content">
+    <a href="index.html" class="logo">
+      <div class="logo-badge"><i data-lucide="graduation-cap" style="width:18px;height:18px;"></i></div>
+      LizOn Education
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ielts-tests.html">IELTS Hub</a></li>
+      <li><a href="ielts-reading-tests.html">Reading</a></li>
+      <li><a href="ielts-listening-tests.html">Listening</a></li>
+      <li><a href="ielts-speaking-tests.html">Speaking</a></li>
+      <li><a href="ielts-writing-tests.html" class="active" style="color: var(--accent-emerald);">Writing</a></li>
+      <li><a href="assessment.html">Diagnostic</a></li>
+    </ul>
+    <div class="nav-auth-wrap" id="nav-auth-container">
+      <button onclick="openAuthModal()" class="btn btn-secondary">Login</button>
+      <a href="assessment.html" class="btn btn-primary">Check Level</a>
+    </div>
+  </div>
+</nav>
+  <main class="container">
+    
+    <header class="header-section">
+      <h1>Free Online IELTS Writing Test Collection</h1>
+      <p>Explore authentic Cambridge past papers for Academic and General Training with split-screen question viewing, automated word count monitors, and model sample essays.</p>
+    </header>
+
+    <!-- Category Filter Pills -->
+    <div class="category-scroll">
+      <a href="#cambridge-academic" class="cat-btn active">Cambridge Academic</a>
+      <a href="#cambridge-general" class="cat-btn">Cambridge General</a>
+      <a href="ielts-tests.html" class="cat-btn">Recent Actual Tests</a>
+      <a href="ielts-tests.html" class="cat-btn">IELTS Trainer</a>
+      <a href="ielts-tests.html" class="cat-btn">Official Guide to IELTS</a>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- SECTION 1: CAMBRIDGE ACADEMIC WRITING          -->
+    <!-- ============================================== -->
+    <section id="cambridge-academic">
+      <div class="series-heading">
+        <h2>Cambridge Academic</h2>
+        <p>The Cambridge IELTS Academic series uses authentic past papers from the official exam creators, making it the most reliable way to practice. Because the material closely matches the real Academic exam in format, logic, and difficulty, it is the best category to start with if you want a true exam experience.</p>
+      </div>
+
+      <!-- Academic Page 1 (Cambridge 21, 20, 19) -->
+      <div class="test-grid" id="acad-page-1">
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 21<br>Academic Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c21a-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c21a-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 21<br>Academic Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c21a-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c21a-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 21<br>Academic Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c21a-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c21a-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 21<br>Academic Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c21a-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c21a-w1')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 20<br>Academic Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c20a-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c20a-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 20<br>Academic Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c20a-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c20a-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 20<br>Academic Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c20a-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c20a-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 20<br>Academic Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c20a-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c20a-w1')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 19<br>Academic Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c19a-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c19a-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 19<br>Academic Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c19a-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c19a-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 19<br>Academic Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c19a-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c19a-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 19<br>Academic Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c19a-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c19a-w1')">Practice Part</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Academic Page 2 (Cambridge 18, 17, 16) -->
+      <div class="test-grid" id="acad-page-2" style="display: none;">
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 18<br>Academic Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c18a-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 18<br>Academic Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c18a-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 18<br>Academic Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c18a-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 18<br>Academic Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c18a-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w1')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 17<br>Academic Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c17a-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 17<br>Academic Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c17a-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 17<br>Academic Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c17a-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 17<br>Academic Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c17a-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w1')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 16<br>Academic Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c16a-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 16<br>Academic Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c16a-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 16<br>Academic Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c16a-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 16<br>Academic Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c16a-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18a-w1')">Practice Part</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Academic 2-Page Pagination -->
+      <div class="pagination-wrap">
+        <button class="page-btn" onclick="switchSectionPage('acad', 1)">&laquo; Previous</button>
+        <button class="page-btn active" id="acad-pbtn-1" onclick="switchSectionPage('acad', 1)">1</button>
+        <button class="page-btn" id="acad-pbtn-2" onclick="switchSectionPage('acad', 2)">2</button>
+        <button class="page-btn" onclick="switchSectionPage('acad', 2)">Next &raquo;</button>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- ============================================== -->
+    <!-- SECTION 2: CAMBRIDGE GENERAL WRITING           -->
+    <!-- ============================================== -->
+    <section id="cambridge-general">
+      <div class="series-heading">
+        <h2>Cambridge General</h2>
+        <p>The Cambridge IELTS General Training series uses authentic past papers from the official exam creators, making it the most reliable way to practice. Because the material closely matches the real GT exam in format, logic, and difficulty, it is the best category to start with if you want a true exam experience.</p>
+      </div>
+
+      <!-- General Page 1 (Cambridge 20, 19, 18) -->
+      <div class="test-grid" id="gen-page-1">
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 20<br>General Training Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c20g-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c20g-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 20<br>General Training Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c20g-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c20g-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 20<br>General Training Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c20g-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c20g-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 20<br>General Training Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c20g-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c20g-w1')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 19<br>General Training Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c19g-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c19g-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 19<br>General Training Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c19g-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c19g-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 19<br>General Training Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c19g-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c19g-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 19<br>General Training Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c19g-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c19g-w1')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 18<br>General Training Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c18g-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 18<br>General Training Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c18g-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 18<br>General Training Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c18g-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 18<br>General Training Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c18g-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w1')">Practice Part</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- General Page 2 (Cambridge 17, 16, 15) -->
+      <div class="test-grid" id="gen-page-2" style="display: none;">
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 17<br>General Training Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c17g-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 17<br>General Training Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c17g-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 17<br>General Training Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c17g-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 17<br>General Training Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c17g-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w1')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 16<br>General Training Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c16g-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 16<br>General Training Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c16g-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 16<br>General Training Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c16g-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 16<br>General Training Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c16g-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w1')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 15<br>General Training Writing Test 4</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c15g-w4&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w4')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 15<br>General Training Writing Test 3</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c15g-w3&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w3')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 15<br>General Training Writing Test 2</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c15g-w2&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w2')">Practice Part</button>
+          </div>
+        </div>
+
+        <div class="test-box">
+          <h3 class="test-title">Cambridge IELTS 15<br>General Training Writing Test 1</h3>
+          <div class="btn-group">
+            <button class="btn-action btn-take-test" onclick="requireAuth('ielts-exam-runner.html?test=c15g-w1&type=writing&mode=full')">Take Test</button>
+            <button class="btn-action btn-practice-section" onclick="openPracticeModal('c18g-w1')">Practice Part</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- General 2-Page Pagination -->
+      <div class="pagination-wrap">
+        <button class="page-btn" onclick="switchSectionPage('gen', 1)">&laquo; Previous</button>
+        <button class="page-btn active" id="gen-pbtn-1" onclick="switchSectionPage('gen', 1)">1</button>
+        <button class="page-btn" id="gen-pbtn-2" onclick="switchSectionPage('gen', 2)">2</button>
+        <button class="page-btn" onclick="switchSectionPage('gen', 2)">Next &raquo;</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Writing Practice Modal -->
+  <div class="modal-backdrop" id="practiceModal" onclick="closeModalOnOutside(event)">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closePracticeModal()">
+        <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+      </button>
+
+      <div class="modal-header">
+        <h3 id="modalTestTitle">Cambridge IELTS Writing Test</h3>
+        <p class="modal-subtitle">Choose a task to practice (opens in interactive editor):</p>
+      </div>
+
+      <div class="modal-item-list">
+        <a id="task1Link" href="#" target="_blank" class="modal-item">
+          <span class="q-range">Task 1</span>
+          <span class="q-type">Data / Letter Report (Min. 150 words — 20 mins)</span>
+        </a>
+        <a id="task2Link" href="#" target="_blank" class="modal-item">
+          <span class="q-range">Task 2</span>
+          <span class="q-type">Discursive Essay (Min. 250 words — 40 mins)</span>
+        </a>
+      </div>
+
+      <div class="modal-divider-text">Or take full test simulation:</div>
+      <div class="modal-item-list" style="margin-bottom: 0;">
+        <a id="fullTestLink" href="#" target="_blank" class="modal-item" style="border-color: var(--border-active); background: rgba(16, 185, 129, 0.08);">
+          <span class="q-range" style="color: var(--accent-emerald);">Full Mock Test</span>
+          <span class="q-type" style="color: #FFF;">Complete Writing Exam (60 mins)</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function switchSectionPage(sectionKey, pageNum) {
+      const page1 = document.getElementById(`${sectionKey}-page-1`);
+      const page2 = document.getElementById(`${sectionKey}-page-2`);
+      const btn1 = document.getElementById(`${sectionKey}-pbtn-1`);
+      const btn2 = document.getElementById(`${sectionKey}-pbtn-2`);
+
+      if (pageNum === 1) {
+        if (page1) page1.style.display = 'grid';
+        if (page2) page2.style.display = 'none';
+        if (btn1) btn1.classList.add('active');
+        if (btn2) btn2.classList.remove('active');
+      } else {
+        if (page1) page1.style.display = 'none';
+        if (page2) page2.style.display = 'grid';
+        if (btn1) btn1.classList.remove('active');
+        if (btn2) btn2.classList.add('active');
+      }
+    }
+
+    function openPracticeModal(testId) {
+      document.getElementById('modalTestTitle').innerText = testId.toUpperCase().replace('-', ' ') + ' Writing Practice';
+
+      document.getElementById('task1Link').href = `ielts-exam-runner.html?test=${testId}&type=writing&part=1`;
+      document.getElementById('task2Link').href = `ielts-exam-runner.html?test=${testId}&type=writing&part=2`;
+      document.getElementById('fullTestLink').href = `ielts-exam-runner.html?test=${testId}&type=writing&mode=full`;
+
+      document.getElementById('practiceModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePracticeModal() {
+      document.getElementById('practiceModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function closeModalOnOutside(event) {
+      if (event.target.id === 'practiceModal') {
+        closePracticeModal();
+      }
+    }
+  </script>
+
+  <!-- Navbar dynamic user state script -->
+  <script>
+    if (typeof supabase !== 'undefined') {
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          const container = document.getElementById('nav-auth-container');
+          const isAdmin = user.email === 'swapnil7kuri@gmail.com';
+          container.innerHTML = `
+            <a href="${isAdmin ? 'admin.html' : 'ielts-tests.html'}" class="btn btn-secondary">
+              ${isAdmin ? 'Admin Panel' : 'My Tests'}
+            </a>
+            <button onclick="supabase.auth.signOut().then(() => location.reload())" class="btn btn-secondary" style="color: #94A3B8;">
+              Sign Out
+            </button>
+          `;
+        }
+      }).catch(err => console.log('Auth check skipped:', err));
+    }
+  </script>
+
+  <!-- Global Auth Modal component -->
+  <script src="auth-modal.js"></script>
+</body>
+</html>

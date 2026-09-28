@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Registration — LizOn Education</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070B0E;
+      --bg-card: rgba(18, 26, 33, 0.75);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(16, 185, 129, 0.4);
+      --accent-emerald: #10B981;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+    .ambient-glow {
+      position: fixed;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, rgba(7, 11, 14, 0) 70%);
+      pointer-events: none;
+    }
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 460px;
+      padding: 36px 32px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 1;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .auth-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 24px;
+    }
+    .auth-tab-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-tab-btn.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFF;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      background: #090E13;
+      border: 1px solid var(--border-subtle);
+      color: #FFF;
+      padding: 11px 14px;
+      border-radius: 9px;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--accent-emerald);
+    }
+    .btn-submit {
+      width: 100%;
+      background: var(--accent-emerald);
+      color: #042F20;
+      font-weight: 700;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+    .btn-submit:hover {
+      background: #34D399;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+    }
+    .alert-msg {
+      display: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .alert-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #F87171;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="logo-badge"><i data-lucide="graduation-cap" style="width:22px;height:22px;"></i></div>
+      <h2 style="font-size: 1.4rem; font-weight: 800;">LizOn Education Portal</h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Sign in or create an account to start exams</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab-btn active" id="tab-login-btn" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab-btn" id="tab-signup-btn" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+
+    <div id="error-alert" class="alert-msg alert-error"></div>
+
+    <!-- Login Form -->
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="login-email" class="form-input" placeholder="e.g. swapnil7kuri@gmail.com" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn-submit" id="btn-login-text">Sign In</button>
+    </form>
+
+    <!-- Sign Up Form (Captures Lead Profile Details) -->
+    <form id="signup-form" style="display: none;" onsubmit="handleSignup(event)">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" id="reg-name" class="form-input" placeholder="Your name" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="reg-email" class="form-input" placeholder="you@gmail.com" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mobile Number</label>
+        <input type="tel" id="reg-phone" class="form-input" placeholder="017XXXXXXXX" required />
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">Desired Score</label>
+          <select id="reg-score" class="form-select">
+            <option value="Band 6.5">IELTS 6.5</option>
+            <option value="Band 7.0">IELTS 7.0</option>
+            <option value="Band 7.5+">IELTS 7.5+</option>
+            <option value="PTE 65">PTE 65</option>
+            <option value="PTE 79+">PTE 79+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Desired Country</label>
+          <select id="reg-country" class="form-select">
+            <option value="UK">United Kingdom</option>
+            <option value="Australia">Australia</option>
+            <option value="Canada">Canada</option>
+            <option value="USA">USA</option>
+            <option value="Europe">Europe</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Create Password</label>
+        <input type="password" id="reg-password" class="form-input" placeholder="Min. 6 characters" required />
+      </div>
+      <button type="submit" class="btn-submit" id="btn-reg-text">Register & Access Tests</button>
+    </form>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function switchAuthTab(type) {
+      const isLogin = type === 'login';
+      document.getElementById('login-form').style.display = isLogin ? 'block' : 'none';
+      document.getElementById('signup-form').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('tab-login-btn').classList.toggle('active', isLogin);
+      document.getElementById('tab-signup-btn').classList.toggle('active', !isLogin);
+      document.getElementById('error-alert').style.display = 'none';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-login-text');
+      btn.innerText = "Verifying...";
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        showError(error.message);
+        btn.innerText = "Sign In";
+        return;
+      }
+
+      // Check role & redirect
+      checkRoleAndRedirect(data.user);
+    }
+
+    async function handleSignup(e) {
+      e.preventDefault();
+      const full_name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const desire_score = document.getElementById('reg-score').value;
+      const desire_country = document.getElementById('reg-country').value;
+      const password = document.getElementById('reg-password').value;
+
+      const btn = document.getElementById('btn-reg-text');
+      btn.innerText = "Creating Profile...";
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name, phone, desire_score, desire_country }
+        }
+      });
+
+      if (error) {
+        showError(error.message);
+        btn.innerText = "Register & Access Tests";
+        return;
+      }
+
+      checkRoleAndRedirect(data.user);
+    }
+
+    async function checkRoleAndRedirect(user) {
+      if (user.email === 'swapnil7kuri@gmail.com') {
+        window.location.href = 'admin.html';
+        return;
+      }
+      
+      // Default: Student redirected back to Reading Tests or destination
+      const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'ielts-reading-tests.html';
+      window.location.href = redirectUrl;
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-alert');
+      el.innerText = msg;
+      el.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LizOn Admin Dashboard</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070B0E;
+      --bg-surface: #0E161E;
+      --bg-card: rgba(18, 26, 33, 0.7);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --accent-emerald: #10B981;
+      --accent-red: #EF4444;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
+
+    header {
+      height: 70px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(11, 17, 23, 0.8);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+    .admin-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; }
+    .badge-admin { background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
+
+    .main-wrap { max-width: 1300px; margin: 32px auto; padding: 0 24px; }
+    
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 20px; }
+    .stat-card h4 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+    .stat-card .val { font-size: 1.8rem; font-weight: 800; color: #FFF; }
+
+    /* Nav Tabs */
+    .dashboard-tabs { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; }
+    .tab-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 10px 22px; border-radius: 9px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .tab-btn.active { background: rgba(16, 185, 129, 0.15); color: #FFF; border-color: var(--accent-emerald); }
+
+    .action-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .search-box { background: var(--bg-surface); border: 1px solid var(--border-subtle); color: #FFF; padding: 10px 16px; border-radius: 9px; width: 300px; font-size: 0.85rem; outline: none; }
+    .search-box:focus { border-color: var(--accent-emerald); }
+
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; text-decoration: none; }
+    .btn-primary { background: var(--accent-emerald); color: #042F20; }
+    .btn-danger { background: rgba(239, 68, 68, 0.12); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.25); }
+
+    /* Tables */
+    .table-container { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; display: none; }
+    .table-container.active { display: block; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
+    th { background: #0A0F14; padding: 14px 20px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-subtle); }
+    td { padding: 16px 20px; border-bottom: 1px solid var(--border-subtle); color: #E2E8F0; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: #0D141C; border: 1px solid var(--border-subtle); border-radius: 16px; width: 100%; max-width: 480px; padding: 28px; }
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
+    .form-input { width: 100%; background: #070B0E; border: 1px solid var(--border-subtle); color: #FFF; padding: 10px 14px; border-radius: 8px; outline: none; font-size: 0.875rem; }
+    .form-input:focus { border-color: var(--accent-emerald); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="admin-brand">
+      <i data-lucide="shield-check" style="color:var(--accent-emerald);"></i>
+      <span>LizOn Control Center</span>
+      <span class="badge-admin">Admin</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <span style="font-size: 0.85rem; color: var(--text-muted);">swapnil7kuri@gmail.com</span>
+      <button onclick="handleLogout()" class="btn btn-danger">Logout</button>
+    </div>
+  </header>
+
+  <main class="main-wrap">
+    
+    <!-- Top Stats -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <h4>Total Registered Students</h4>
+        <div class="val" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <h4>Total Exam Attempts</h4>
+        <div class="val" id="stat-attempts">0</div>
+      </div>
+      <div class="stat-card">
+        <h4>UK Intakes</h4>
+        <div class="val" id="stat-uk">0</div>
+      </div>
+      <div class="stat-card">
+        <h4>Targeting Band 7.5+</h4>
+        <div class="val" id="stat-high-scorers">0</div>
+      </div>
+    </div>
+
+    <!-- Tab Selection Header -->
+    <div class="dashboard-tabs">
+      <button class="tab-btn active" id="tab-btn-users" onclick="switchTab('users')">1. Registered Users Database</button>
+      <button class="tab-btn" id="tab-btn-exams" onclick="switchTab('exams')">2. Exam Attempt Logs & Scores</button>
+    </div>
+
+    <!-- ACTIONS BAR -->
+    <div class="action-header">
+      <input type="text" id="admin-search" class="search-box" placeholder="Search records..." oninput="filterTables()" />
+      <div id="user-action-btn">
+        <button class="btn btn-primary" onclick="openAddModal()">
+          <i data-lucide="user-plus" style="width:16px;height:16px;"></i> Add Student Manually
+        </button>
+      </div>
+    </div>
+
+    <!-- PART 1: REGISTERED USERS TABLE -->
+    <div class="table-container active" id="container-users">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Desired Score</th>
+            <th>Country</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="student-table-body">
+          <tr><td colspan="7" style="text-align:center; color: var(--text-muted);">Loading students...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PART 2: EXAM ATTEMPT LOGS TABLE -->
+    <div class="table-container" id="container-exams">
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Test Taken</th>
+            <th>Score Achieved</th>
+            <th>Percentage</th>
+            <th>Attempt Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="exam-table-body">
+          <tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Loading exam logs...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- Add / Edit Student Modal -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal-box">
+      <h3 id="modal-title" style="margin-bottom: 18px; font-size: 1.2rem;">Add Student Manually</h3>
+      <form id="user-form" onsubmit="saveUser(event)">
+        <input type="hidden" id="edit-id" />
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="m-name" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="m-email" class="form-input" required />
+        </div>
+        
+        <!-- Password Field with Eye Toggle & minlength = 6 -->
+        <div class="form-group" id="password-group">
+          <label class="form-label">Temporary Password (Min 6 Characters)</label>
+          <div style="position: relative;">
+            <input type="password" id="m-password" class="form-input" placeholder="e.g. LizOn@123" minlength="6" style="padding-right: 42px;" />
+            <button type="button" onclick="togglePasswordVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem;" title="Show/Hide Password">👁️</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="text" id="m-phone" class="form-input" />
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label class="form-label">Desired Score</label>
+            <input type="text" id="m-score" class="form-input" placeholder="e.g. Band 7.5" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Desired Country</label>
+            <input type="text" id="m-country" class="form-input" placeholder="e.g. UK" />
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn" style="flex:1; background:rgba(255,255,255,0.06); color:#FFF;" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    let allProfiles = [];
+    let allExamLogs = [];
+    let currentTab = 'users';
+
+    async function verifyAdmin() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || user.email !== 'swapnil7kuri@gmail.com') {
+        window.location.href = 'auth.html';
+        return;
+      }
+      fetchAllData();
+    }
+
+    async function fetchAllData() {
+      // 1. Fetch Profiles
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      allProfiles = profilesData || [];
+      renderUsersTable(allProfiles);
+
+      // 2. Fetch Exam Results / Attempt Logs
+      const { data: examsData } = await supabase
+        .from('exam_results')
+        .select('*')
+        .order('completed_at', { ascending: false });
+
+      allExamLogs = examsData || [];
+      renderExamsTable(allExamLogs);
+
+      // 3. Compute Top Stats
+      document.getElementById('stat-total').innerText = allProfiles.length;
+      document.getElementById('stat-attempts').innerText = allExamLogs.length;
+      document.getElementById('stat-uk').innerText = allProfiles.filter(p => (p.desire_country || '').toLowerCase().includes('uk')).length;
+      document.getElementById('stat-high-scorers').innerText = allProfiles.filter(p => (p.desire_score || '').includes('7.5') || (p.desire_score || '').includes('79')).length;
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-btn-users').classList.toggle('active', tab === 'users');
+      document.getElementById('tab-btn-exams').classList.toggle('active', tab === 'exams');
+      document.getElementById('container-users').classList.toggle('active', tab === 'users');
+      document.getElementById('container-exams').classList.toggle('active', tab === 'exams');
+      document.getElementById('user-action-btn').style.display = tab === 'users' ? 'block' : 'none';
+      document.getElementById('admin-search').value = '';
+      filterTables();
+    }
+
+    function renderUsersTable(list) {
+      const tbody = document.getElementById('student-table-body');
+      tbody.innerHTML = '';
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted);">No students registered yet.</td></tr>`;
+        return;
+      }
+
+      list.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${p.full_name}</strong></td>
+          <td>${p.email}</td>
+          <td>${p.phone || '—'}</td>
+          <td><span style="color:var(--accent-emerald); font-weight:700;">${p.desire_score || '—'}</span></td>
+          <td>${p.desire_country || '—'}</td>
+          <td>${p.created_at ? new Date(p.created_at).toLocaleDateString() : '—'}</td>
+          <td>
+            <button class="btn" style="padding:4px 8px; background:rgba(255,255,255,0.05); color:#FFF;" onclick='editUser(${JSON.stringify(p)})'>Edit</button>
+            <button class="btn btn-danger" style="padding:4px 8px;" onclick="deleteUser('${p.id}')">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderExamsTable(list) {
+      const tbody = document.getElementById('exam-table-body');
+      tbody.innerHTML = '';
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">No exam attempts recorded yet.</td></tr>`;
+        return;
+      }
+
+      list.forEach(ex => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${ex.user_name}</strong></td>
+          <td>${ex.user_email}</td>
+          <td><span style="background:rgba(59, 130, 246, 0.15); color:#60A5FA; padding:3px 8px; border-radius:6px; font-weight:600; font-size:0.8rem;">${ex.test_name}</span></td>
+          <td><strong style="color:var(--accent-emerald);">${ex.score}</strong></td>
+          <td>${ex.percentage}%</td>
+          <td>${new Date(ex.completed_at).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterTables() {
+      const q = document.getElementById('admin-search').value.toLowerCase();
+      if (currentTab === 'users') {
+        const filtered = allProfiles.filter(p => 
+          (p.full_name || '').toLowerCase().includes(q) ||
+          (p.email || '').toLowerCase().includes(q) ||
+          (p.phone || '').toLowerCase().includes(q)
+        );
+        renderUsersTable(filtered);
+      } else {
+        const filtered = allExamLogs.filter(ex => 
+          (ex.user_name || '').toLowerCase().includes(q) ||
+          (ex.user_email || '').toLowerCase().includes(q) ||
+          (ex.test_name || '').toLowerCase().includes(q)
+        );
+        renderExamsTable(filtered);
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('m-password');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+      } else {
+        pwdInput.type = 'password';
+      }
+    }
+
+    function openAddModal() {
+      document.getElementById('modal-title').innerText = "Add Student Manually";
+      document.getElementById('edit-id').value = "";
+      document.getElementById('m-name').value = "";
+      document.getElementById('m-email').value = "";
+      document.getElementById('m-password').value = "";
+      document.getElementById('m-password').required = true;
+      document.getElementById('password-group').style.display = 'block';
+      document.getElementById('m-phone').value = "";
+      document.getElementById('m-score').value = "";
+      document.getElementById('m-country').value = "";
+      document.getElementById('userModal').classList.add('active');
+    }
+
+    function editUser(p) {
+      document.getElementById('modal-title').innerText = "Edit Student Profile";
+      document.getElementById('edit-id').value = p.id;
+      document.getElementById('m-name').value = p.full_name;
+      document.getElementById('m-email').value = p.email;
+      document.getElementById('m-password').required = false;
+      document.getElementById('password-group').style.display = 'none'; // Hide password field when editing existing profile
+      document.getElementById('m-phone').value = p.phone || '';
+      document.getElementById('m-score').value = p.desire_score || '';
+      document.getElementById('m-country').value = p.desire_country || '';
+      document.getElementById('userModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('userModal').classList.remove('active');
+    }
+
+    async function saveUser(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-id').value;
+      const full_name = document.getElementById('m-name').value;
+      const email = document.getElementById('m-email').value;
+      const password = document.getElementById('m-password').value;
+      const phone = document.getElementById('m-phone').value;
+      const desire_score = document.getElementById('m-score').value;
+      const desire_country = document.getElementById('m-country').value;
+
+      if (id) {
+        // Update existing profile
+        const { error } = await supabase.from('profiles').update({ full_name, email, phone, desire_score, desire_country }).eq('id', id);
+        if (error) {
+          alert('Error updating user: ' + error.message);
+          return;
+        }
+      } else {
+        // Ensure password is at least 6 characters before submitting
+        if (password.length < 6) {
+          alert('Password must be at least 6 characters long.');
+          return;
+        }
+
+        // Create new auth user + database profile record
+        try {
+          const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: { full_name: full_name }
+            }
+          });
+
+          if (authError) throw authError;
+
+          const userId = authData.user?.id || crypto.randomUUID();
+
+          const { error: dbError } = await supabase.from('profiles').insert([{ 
+            id: userId,
+            full_name, 
+            email, 
+            phone, 
+            desire_score, 
+            desire_country 
+          }]);
+
+          if (dbError) throw dbError;
+
+          alert('Student successfully created! They can now log in using their email and temporary password.');
+        } catch (err) {
+          alert('Error creating student account: ' + err.message);
+          return;
+        }
+      }
+
+      closeModal();
+      fetchAllData();
+    }
+
+    async function deleteUser(id) {
+      if (!confirm("Are you sure you want to delete this user record?")) return;
+      await supabase.from('profiles').delete().eq('id', id);
+      fetchAllData();
+    }
+
+    async function handleLogout() {
+      await supabase.auth.signOut();
+      window.location.href = 'auth.html';
+    }
+
+    verifyAdmin();
+  </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<script>
+    lucide.createIcons();
+
+    // Parse URL query params
+    const params = new URLSearchParams(window.location.search);
+    const testMode = params.get('mode');
+    const testId = params.get('test') || 'c21a-t4';
+
+    if (testMode === 'full') {
+      document.getElementById('mode-badge').innerText = 'Official Full Mock';
+      document.getElementById('mode-badge').style.background = 'rgba(239, 68, 68, 0.15)';
+      document.getElementById('mode-badge').style.color = '#EF4444';
+    }
+
+    // Timer Countdown
+    let time = 60 * 60;
+    const timerElem = document.getElementById('timer');
+    setInterval(() => {
+      if (time <= 0) return;
+      time--;
+      const m = String(Math.floor(time / 60)).padStart(2, '0');
+      const s = String(time % 60).padStart(2, '0');
+      timerElem.innerText = `${m}:${s}`;
+    }, 1000);
+
+    // Question State Tracking
+    function setAnswered(qNum) {
+      document.getElementById(`p-btn-${qNum}`).classList.add('answered');
+    }
+
+    function checkInput(qNum) {
+      const val = document.getElementById(`input-${qNum}`).value.trim();
+      const pBtn = document.getElementById(`p-btn-${qNum}`);
+      if (val.length > 0) {
+        pBtn.classList.add('answered');
+      } else {
+        pBtn.classList.remove('answered');
+      }
+    }
+
+    function jumpToQuestion(qNum) {
+      document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+      const targetBtn = document.getElementById(`p-btn-${qNum}`);
+      if (targetBtn) targetBtn.classList.add('active');
+
+      const qBlock = document.getElementById(`q-block-${qNum}`);
+      if (qBlock) qBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Answers from official Cambridge 21 Academic Test 4 Answer Key
+    const answerKey = {
+      1: "TRUE",
+      2: "FALSE",
+      3: "TRUE",
+      4: "NOT GIVEN",
+      5: "NOT GIVEN",
+      6: "FALSE",
+      7: "TRUE",
+      8: ["cow dung"],
+      9: ["fermentation", "fermentation process"],
+      10: ["pipes"]
+    };
+
+    let currentUser = null;
+
+    // Test Wall Guard & User Session Loader
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) {
+        window.location.href = `auth.html?redirect=${encodeURIComponent(window.location.href)}`;
+      } else {
+        currentUser = user;
+      }
+    });
+
+    async function openResults() {
+      let score = 0;
+      for (let i = 1; i <= 7; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && selected.value === answerKey[i]) score++;
+      }
+      for (let i = 8; i <= 10; i++) {
+        const val = document.getElementById(`input-${i}`).value.trim().toLowerCase();
+        if (answerKey[i].includes(val)) score++;
+      }
+
+      const percentage = Math.round((score / 10) * 100);
+      let band = "5.0";
+      if (score >= 9) band = "8.5 - 9.0";
+      else if (score >= 7) band = "7.0 - 7.5";
+      else if (score >= 5) band = "6.0 - 6.5";
+
+      document.getElementById('score-display').innerText = `${score}/10`;
+      document.getElementById('score-summary').innerText = `Estimated Band: ${band} (${percentage}%)`;
+      document.getElementById('resultModal').classList.add('active');
+
+      // Save Attempt Record to Supabase
+      if (currentUser) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', currentUser.id)
+          .single();
+
+        await supabase.from('exam_results').insert([{
+          user_id: currentUser.id,
+          user_email: currentUser.email,
+          user_name: profile ? profile.full_name : 'Student',
+          test_name: testId.toUpperCase() + (testMode === 'full' ? ' (Full Mock)' : ' (Section Practice)'),
+          score: `${score}/10 (Band ${band})`,
+          percentage: percentage
+        }]);
+      }
+    }
+  </script>

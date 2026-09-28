@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask Cambridge IELTS AI — LizOn Education</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070B0E;
+      --bg-card: rgba(18, 26, 33, 0.75);
+      --bg-card-hover: rgba(26, 37, 47, 0.9);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(16, 185, 129, 0.4);
+      --accent-emerald: #10B981;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 750px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(7, 11, 14, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(7, 11, 14, 0.85);
+    }
+    .nav-content {
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #FFF;
+      font-weight: 800;
+      font-size: 1.15rem;
+      white-space: nowrap;
+    }
+    .logo-badge {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+    }
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #FFF;
+    }
+    .nav-auth-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent-emerald);
+      color: #042F20;
+    }
+    .btn-primary:hover { 
+      background: #34d399; 
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Chat Layout Container */
+    .chat-container {
+      max-width: 850px;
+      width: calc(100% - 32px);
+      height: calc(100vh - 130px);
+      max-height: 720px;
+      margin: 24px auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    .chat-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .chat-header h2 { font-size: 1.15rem; font-weight: 800; color: #FFF; margin-bottom: 2px; }
+    .chat-header p { font-size: 0.825rem; color: var(--text-muted); }
+
+    .online-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(16,185,129,0.1);
+      color: var(--accent-emerald);
+      padding: 6px 12px;
+      border-radius: 99px;
+      border: 1px solid rgba(16,185,129,0.3);
+    }
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent-emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+
+    /* Messages Scroll Area */
+    .chat-messages {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+    .message {
+      max-width: 82%;
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .message.ai {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      align-self: flex-start;
+      color: var(--text-main);
+      border-top-left-radius: 4px;
+    }
+    .message.user {
+      background: var(--accent-emerald);
+      color: #042F20;
+      font-weight: 600;
+      align-self: flex-end;
+      border-top-right-radius: 4px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Quick Suggestions Bar */
+    .suggestions-row {
+      display: flex;
+      gap: 8px;
+      padding: 0 24px 12px 24px;
+      overflow-x: auto;
+    }
+    .suggestion-chip {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .suggestion-chip:hover {
+      background: rgba(16,185,129,0.1);
+      color: var(--accent-emerald);
+      border-color: var(--border-active);
+    }
+
+    /* Input Area Fixed Alignment */
+    .chat-input-area {
+      padding: 18px 24px;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(7, 11, 14, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 14px 18px;
+      color: #FFF;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .chat-input:focus {
+      border-color: var(--accent-emerald);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .chat-container { height: calc(100vh - 90px); margin: 0; border-radius: 0; border: none; }
+    }
+
+    /* ---------- Chat additions ---------- */
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 6px 12px; border-radius: 99px;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover { color: #FFF; background: rgba(255,255,255,0.09); }
+    .icon-btn:focus-visible, .suggestion-chip:focus-visible, .btn:focus-visible, .chat-input:focus-visible {
+      outline: 2px solid var(--accent-emerald); outline-offset: 2px;
+    }
+
+    .message.ai { max-width: 88%; overflow-wrap: anywhere; }
+    .message.error {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #FCA5A5;
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+    }
+    .message.user { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+    /* Rendered markdown inside AI messages */
+    .message.ai p { margin: 0 0 10px; }
+    .message.ai > *:last-child { margin-bottom: 0; }
+    .message.ai h3, .message.ai h4, .message.ai h5 { margin: 14px 0 6px; color: #FFF; font-weight: 700; line-height: 1.3; }
+    .message.ai h3 { font-size: 1.05rem; }
+    .message.ai h4 { font-size: 0.98rem; }
+    .message.ai h5 { font-size: 0.95rem; }
+    .message.ai ul, .message.ai ol { margin: 0 0 10px 20px; }
+    .message.ai li { margin-bottom: 4px; }
+    .message.ai strong { color: #FFF; font-weight: 700; }
+    .message.ai code {
+      background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 5px;
+      font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.85em;
+    }
+    .message.ai pre {
+      background: rgba(0,0,0,0.35); border: 1px solid var(--border-subtle);
+      padding: 12px 14px; border-radius: 10px; overflow-x: auto; margin: 0 0 10px;
+    }
+    .message.ai pre code { background: none; padding: 0; }
+    .message.ai .table-wrap { overflow-x: auto; margin: 0 0 10px; }
+    .message.ai table { border-collapse: collapse; font-size: 0.875rem; min-width: 100%; }
+    .message.ai th, .message.ai td { border: 1px solid var(--border-subtle); padding: 7px 10px; text-align: left; vertical-align: top; }
+    .message.ai th { background: rgba(16,185,129,0.1); color: #FFF; }
+
+    /* Typing indicator */
+    .typing { display: inline-flex; gap: 5px; align-items: center; padding: 4px 0; }
+    .typing span {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted);
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.15s; }
+    .typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    .suggestions-row { flex-wrap: wrap; }
+    .suggestions-row.hidden { display: none; }
+    textarea.chat-input { resize: none; max-height: 140px; line-height: 1.45; font-family: inherit; }
+    .btn[disabled] { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+    .chat-footnote {
+      padding: 0 24px 14px; font-size: 0.72rem; color: var(--text-dim);
+      background: rgba(7, 11, 14, 0.7); text-align: center;
+    }
+    .chat-footnote a { color: var(--accent-emerald); text-decoration: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .message { animation: none; }
+      .typing span { animation: none; opacity: 0.7; }
+      .chat-messages { scroll-behavior: auto; }
+    }
+    @media (max-width: 600px) {
+      .chat-header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; }
+      .chat-messages { padding: 16px; }
+      .suggestions-row { padding: 0 16px 10px; }
+      .chat-input-area { padding: 12px 16px; }
+      .chat-footnote { padding: 0 16px 12px; }
+      .message.ai, .message.user { max-width: 94%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-content" style="max-width: 1200px; margin:0 auto;">
+      <a href="index.html" class="logo">
+        <div class="logo-badge"><i data-lucide="graduation-cap" style="width:18px;height:18px;"></i></div>
+        LizOn Education
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="ielts-tests.html">IELTS Hub</a></li>
+        <li><a href="1v1.html">1v1 Mentorship</a></li>
+        <li><a href="assessment.html">Free Diagnostic</a></li>
+        <li><a href="about.html">About Dhaka Hub</a></li>
+      </ul>
+      
+      <div class="nav-auth-wrap" id="nav-auth-container">
+        <button onclick="openAuthModal()" class="btn btn-secondary">Login</button>
+        <a href="courses.html" class="btn btn-primary">Explore Courses</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Chat Interface -->
+  <main class="chat-container">
+    <div class="chat-header">
+      <div>
+        <h2>Cambridge IELTS Expert AI</h2>
+        <p>Ask anything about Reading strategies, Writing Task 1/2, Listening, or Speaking band descriptors.</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="icon-btn" id="clearBtn" title="Start a new conversation">
+          <i data-lucide="rotate-ccw" style="width:13px;height:13px;"></i> New chat
+        </button>
+        <div class="online-pill">
+          <div class="online-dot"></div>
+          Active AI
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Conversation with Cambridge IELTS Expert AI"></div>
+
+    <!-- Quick Prompt Suggestions -->
+    <div class="suggestions-row" id="suggestions">
+      <button type="button" class="suggestion-chip" data-prompt="How do I structure a Task 2 introduction?">✍️ Task 2 intro structure</button>
+      <button type="button" class="suggestion-chip" data-prompt="Give me tips for True/False/Not Given questions in IELTS Reading.">📖 True/False/Not Given tips</button>
+      <button type="button" class="suggestion-chip" data-prompt="How can I get Band 7.5 in Speaking Part 2?">🗣️ Speaking Part 2 tips</button>
+      <button type="button" class="suggestion-chip" data-prompt="Explain how to describe a bar chart in Writing Task 1 with an example.">📊 Task 1 bar chart</button>
+      <button type="button" class="suggestion-chip" data-prompt="Make me a 4-week IELTS study plan to go from Band 6 to Band 7.">🗓️ 4-week study plan</button>
+    </div>
+
+    <div class="chat-input-area">
+      <textarea id="userInput" class="chat-input" rows="1" maxlength="2000" aria-label="Your IELTS question"
+        placeholder="Type your IELTS question here... (Shift+Enter for a new line)"></textarea>
+      <button type="button" id="sendBtn" class="btn btn-primary" style="padding: 14px 24px;">Send</button>
+    </div>
+    <div class="chat-footnote">
+      AI can make mistakes, so double-check important details. For personal writing/speaking feedback,
+      <a href="https://wa.me/8801611611139" target="_blank" rel="noopener">WhatsApp us at 01611611139</a>.
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // ------------------------------------------------------------------
+    // Config
+    // ------------------------------------------------------------------
+    const FUNCTION_URL = `${SUPABASE_URL}/functions/v1/ask-ielts-ai`;
+    const STORAGE_KEY = 'lizon_ielts_ai_chat_v1';
+    const MAX_HISTORY_SENT = 12;
+    const WELCOME = "Hello! I'm the Cambridge IELTS Expert AI from LizOn Education. Ask me about any IELTS module, paste a paragraph for band feedback, or pick a topic below.";
+
+    const chatEl = document.getElementById('chatMessages');
+    const inputEl = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const suggestionsEl = document.getElementById('suggestions');
+
+    let history = [];      // [{role: 'user'|'assistant', content: '...'}]
+    let busy = false;
+
+    // ------------------------------------------------------------------
+    // Safe mini-markdown renderer (escapes HTML first)
+    // ------------------------------------------------------------------
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function inlineMd(s) {
+      // s is already HTML-escaped
+      return s
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\w)/g, '$1<em>$2</em>');
+    }
+
+    function renderMarkdown(text) {
+      const lines = escapeHtml(text.replace(/\r\n/g, '\n')).split('\n');
+      const out = [];
+      let i = 0;
+
+      const isTableSep = (l) => /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(l);
+      const splitRow = (l) => l.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+
+      while (i < lines.length) {
+        const line = lines[i];
+
+        // fenced code block
+        if (/^\s*```/.test(line)) {
+          const buf = [];
+          i++;
+          while (i < lines.length && !/^\s*```/.test(lines[i])) buf.push(lines[i++]);
+          i++;
+          out.push('<pre><code>' + buf.join('\n') + '</code></pre>');
+          continue;
+        }
+
+        // heading
+        const h = line.match(/^\s{0,3}(#{1,6})\s+(.*)$/);
+        if (h) {
+          const level = Math.min(Math.max(h[1].length + 2, 3), 5);
+          out.push(`<h${level}>${inlineMd(h[2])}</h${level}>`);
+          i++;
+          continue;
+        }
+
+        // table
+        if (line.includes('|') && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+          const head = splitRow(line);
+          i += 2;
+          const rows = [];
+          while (i < lines.length && lines[i].includes('|') && lines[i].trim() !== '') rows.push(splitRow(lines[i++]));
+          let t = '<div class="table-wrap"><table><thead><tr>' + head.map(c => `<th>${inlineMd(c)}</th>`).join('') + '</tr></thead><tbody>';
+          rows.forEach(r => { t += '<tr>' + r.map(c => `<td>${inlineMd(c)}</td>`).join('') + '</tr>'; });
+          out.push(t + '</tbody></table></div>');
+          continue;
+        }
+
+        // lists
+        if (/^\s*[-*•]\s+/.test(line)) {
+          const items = [];
+          while (i < lines.length && /^\s*[-*•]\s+/.test(lines[i])) items.push(lines[i++].replace(/^\s*[-*•]\s+/, ''));
+          out.push('<ul>' + items.map(x => `<li>${inlineMd(x)}</li>`).join('') + '</ul>');
+          continue;
+        }
+        if (/^\s*\d+[.)]\s+/.test(line)) {
+          const items = [];
+          while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) items.push(lines[i++].replace(/^\s*\d+[.)]\s+/, ''));
+          out.push('<ol>' + items.map(x => `<li>${inlineMd(x)}</li>`).join('') + '</ol>');
+          continue;
+        }
+
+        // blank line
+        if (line.trim() === '') { i++; continue; }
+
+        // paragraph (merge consecutive plain lines)
+        const buf = [];
+        while (i < lines.length && lines[i].trim() !== '' &&
+               !/^\s*```/.test(lines[i]) && !/^\s{0,3}#{1,6}\s/.test(lines[i]) &&
+               !/^\s*[-*•]\s+/.test(lines[i]) && !/^\s*\d+[.)]\s+/.test(lines[i]) &&
+               !(lines[i].includes('|') && i + 1 < lines.length && isTableSep(lines[i + 1]))) {
+          buf.push(lines[i++]);
+        }
+        out.push('<p>' + inlineMd(buf.join('<br>')) + '</p>');
+      }
+      return out.join('');
+    }
+
+    // ------------------------------------------------------------------
+    // UI helpers
+    // ------------------------------------------------------------------
+    function scrollToBottom() { chatEl.scrollTop = chatEl.scrollHeight; }
+
+    function addMessage(role, content, opts = {}) {
+      const div = document.createElement('div');
+      div.className = 'message ' + (role === 'user' ? 'user' : opts.error ? 'error' : 'ai');
+      if (role === 'user' || opts.error) div.textContent = content;
+      else div.innerHTML = renderMarkdown(content);
+      chatEl.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function addTyping() {
+      const div = document.createElement('div');
+      div.className = 'message ai';
+      div.setAttribute('aria-label', 'AI is typing');
+      div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+      chatEl.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function setBusy(state) {
+      busy = state;
+      sendBtn.disabled = state;
+      sendBtn.textContent = state ? 'Thinking...' : 'Send';
+    }
+
+    function autoGrow() {
+      inputEl.style.height = 'auto';
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+    }
+
+    function saveHistory() {
+      try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-40))); } catch (e) {}
+    }
+
+    function renderAll() {
+      chatEl.innerHTML = '';
+      addMessage('assistant', WELCOME);
+      history.forEach(m => addMessage(m.role, m.content));
+      suggestionsEl.classList.toggle('hidden', history.length > 0);
+    }
+
+    // ------------------------------------------------------------------
+    // Talk to the backend
+    // ------------------------------------------------------------------
+    async function getAuthToken() {
+      try {
+        if (typeof supabase !== 'undefined') {
+          const { data } = await supabase.auth.getSession();
+          if (data && data.session) return data.session.access_token;
+        }
+      } catch (e) {}
+      return SUPABASE_ANON_KEY;
+    }
+
+    async function askAI(messages) {
+      const token = await getAuthToken();
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 45000);
+      try {
+        const res = await fetch(FUNCTION_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ messages }),
+          signal: controller.signal
+        });
+        let data = {};
+        try { data = await res.json(); } catch (e) {}
+        if (!res.ok) {
+          if (res.status === 404) throw new Error('The AI service is not deployed yet. Please contact the site admin.');
+          throw new Error(data.error || data.message || 'The AI could not answer right now. Please try again.');
+        }
+        return data.reply;
+      } catch (err) {
+        if (err.name === 'AbortError') throw new Error('The AI took too long to respond. Please try again.');
+        if (err instanceof TypeError) throw new Error('Could not reach the AI. Check your internet connection and try again.');
+        throw err;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function sendMessage(preset) {
+      if (busy) return;
+      const text = (preset ?? inputEl.value).trim();
+      if (!text) return;
+
+      suggestionsEl.classList.add('hidden');
+      addMessage('user', text);
+      history.push({ role: 'user', content: text });
+      inputEl.value = '';
+      autoGrow();
+      setBusy(true);
+
+      const typing = addTyping();
+      try {
+        const reply = await askAI(history.slice(-MAX_HISTORY_SENT));
+        typing.remove();
+        addMessage('assistant', reply);
+        history.push({ role: 'assistant', content: reply });
+      } catch (err) {
+        typing.remove();
+        addMessage('assistant', err.message, { error: true });
+        history.pop(); // drop the unanswered question so history stays valid
+        inputEl.value = text; // let the student retry without retyping
+        autoGrow();
+      } finally {
+        saveHistory();
+        setBusy(false);
+        inputEl.focus();
+      }
+    }
+
+    // ------------------------------------------------------------------
+    // Events
+    // ------------------------------------------------------------------
+    sendBtn.addEventListener('click', () => sendMessage());
+    inputEl.addEventListener('input', autoGrow);
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    suggestionsEl.addEventListener('click', (e) => {
+      const chip = e.target.closest('[data-prompt]');
+      if (chip) sendMessage(chip.dataset.prompt);
+    });
+    clearBtn.addEventListener('click', () => {
+      if (busy) return;
+      history = [];
+      try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      renderAll();
+      inputEl.focus();
+    });
+
+    // Restore previous conversation in this tab
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]');
+      if (Array.isArray(saved)) history = saved.filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string');
+    } catch (e) {}
+    renderAll();
+    lucide.createIcons();
+
+    // Session Management for Navbar
+    if (typeof supabase !== 'undefined') {
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          const container = document.getElementById('nav-auth-container');
+          const isAdmin = user.email === 'swapnil7kuri@gmail.com';
+          container.innerHTML = `
+            <a href="${isAdmin ? 'admin.html' : 'ielts-tests.html'}" class="btn btn-secondary">
+              ${isAdmin ? 'Admin Panel' : 'My Tests'}
+            </a>
+            <button onclick="supabase.auth.signOut().then(() => location.reload())" class="btn btn-secondary" style="color: #94A3B8;">
+              Sign Out
+            </button>
+          `;
+        }
+      }).catch(err => console.log('Auth check skipped:', err));
+    }
+  </script>
+  <script src="auth-modal.js"></script>
+</body>
+</html>

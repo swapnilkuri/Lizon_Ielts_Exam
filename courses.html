@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Courses — LizOn Education</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070B0E;
+      --bg-card: rgba(18, 26, 33, 0.65);
+      --bg-card-hover: rgba(26, 37, 47, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(16, 185, 129, 0.4);
+      --accent-emerald: #10B981;
+      --accent-amber: #F59E0B;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 750px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(7, 11, 14, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(7, 11, 14, 0.85);
+    }
+    .nav-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #FFF;
+      font-weight: 800;
+      font-size: 1.15rem;
+      white-space: nowrap;
+    }
+    .logo-badge {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+    }
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #FFF;
+    }
+
+    .nav-auth-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent-emerald);
+      color: #042F20;
+    }
+    .btn-primary:hover {
+      background: #34d399;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      padding: 64px 0 36px;
+    }
+    .page-header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 14px;
+    }
+    .page-header h1 span {
+    background: linear-gradient(135deg, #FFF 30%, var(--text-muted) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    }
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Courses Grid Layout */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      margin-bottom: 80px;
+    }
+
+    .course-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s ease;
+    }
+    .course-card:hover {
+      border-color: var(--border-active);
+      transform: translateY(-3px);
+      background: var(--bg-card-hover);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    .course-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-emerald);
+      margin-bottom: 10px;
+    }
+
+    .course-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .course-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    .options-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: auto;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+    .option-row:hover {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: var(--border-active);
+      transform: translateX(4px);
+    }
+
+    .option-info h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 3px;
+    }
+    .option-info p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .option-arrow {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-emerald);
+      transition: background 0.2s;
+    }
+    .option-row:hover .option-arrow {
+      background: var(--accent-emerald);
+      color: #042F20;
+    }
+
+    @media (max-width: 900px) {
+      .courses-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-content">
+      <a href="index.html" class="logo">
+        <div class="logo-badge"><i data-lucide="graduation-cap" style="width:18px;height:18px;"></i></div>
+        LizOn Education
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="courses.html" class="active" style="color: var(--accent-emerald);">Courses</a></li>
+        <li><a href="ielts-tests.html">IELTS Hub</a></li>
+        <li><a href="1v1.html">1v1 Mentorship</a></li>
+        <li><a href="assessment.html">Free Diagnostic</a></li>
+        <li><a href="about.html">About Dhaka Hub</a></li>
+      </ul>
+      
+      <div class="nav-auth-wrap" id="nav-auth-container">
+        <button onclick="openAuthModal()" class="btn btn-secondary">Login</button>
+        <a href="ielts-tests.html" class="btn btn-primary">IELTS Tests</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="container page-header">
+    <h1>Choose Your Program.<br><span>Master Your Target Score.</span></h1>
+    <p>Explore our results-oriented IELTS and PTE preparation paths tailored for your study abroad ambition.</p>
+  </header>
+
+  <!-- Courses Cards Container -->
+  <main class="container">
+    <div class="courses-grid">
+      
+      <!-- IELTS Course Box -->
+      <div class="course-card">
+        <div class="course-badge">Flagship Module</div>
+        <h2 class="course-title">IELTS Preparation</h2>
+        <p class="course-desc">Comprehensive training structured around official Cambridge exam parameters, rapid reading strategies, and writing frameworks.</p>
+        
+        <div class="options-stack">
+          <a href="ielts.html" class="option-row">
+            <div class="option-info">
+              <h4>Until You Get the Desired Score</h4>
+              <p>Continuous batch training with full target support</p>
+            </div>
+            <div class="option-arrow"><i data-lucide="arrow-right" style="width:16px;height:16px;"></i></div>
+          </a>
+
+          <a href="1v1.html" class="option-row">
+            <div class="option-info">
+              <h4>1 on 1 Personal Care</h4>
+              <p>Dedicated mentor targeting your weak modules</p>
+            </div>
+            <div class="option-arrow"><i data-lucide="arrow-right" style="width:16px;height:16px;"></i></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- PTE Course Box -->
+      <div class="course-card">
+        <div class="course-badge">AI Scored System</div>
+        <h2 class="course-title">PTE Academic</h2>
+        <p class="course-desc">Algorithm-focused preparation designed for Pearson's AI scoring engine to secure high equivalent scores rapidly.</p>
+        
+        <div class="options-stack">
+          <a href="pte.html" class="option-row">
+            <div class="option-info">
+              <h4>Live Crash Course</h4>
+              <p>High-frequency question banks and template drills</p>
+            </div>
+            <div class="option-arrow"><i data-lucide="arrow-right" style="width:16px;height:16px;"></i></div>
+          </a>
+
+          <a href="1v1.html" class="option-row">
+            <div class="option-info">
+              <h4>1 on 1 Personal Care</h4>
+              <p>Customized pacing and speaking pronunciation checks</p>
+            </div>
+            <div class="option-arrow"><i data-lucide="arrow-right" style="width:16px;height:16px;"></i></div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Session Management for Navbar
+    if (typeof supabase !== 'undefined') {
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          const container = document.getElementById('nav-auth-container');
+          const isAdmin = user.email === 'swapnil7kuri@gmail.com';
+          container.innerHTML = `
+            <a href="${isAdmin ? 'admin.html' : 'ielts-tests.html'}" class="btn btn-secondary">
+              ${isAdmin ? 'Admin Panel' : 'My Tests'}
+            </a>
+            <button onclick="supabase.auth.signOut().then(() => location.reload())" class="btn btn-secondary" style="color: #94A3B8;">
+              Sign Out
+            </button>
+          `;
+        }
+      }).catch(err => console.log('Auth check skipped:', err));
+    }
+  </script>
+  
+  <script src="auth-modal.js"></script>
+</body>
+</html>

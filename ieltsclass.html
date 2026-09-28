@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Full Free Class | Reading-Listening-Writing-Speaking-Grammar</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    :root{
+      --brand: #0f4d3b;
+      --brand-soft: #eef5f0;
+      --text: #163126;
+      --muted: #5d7066;
+      --line: #dbe8df;
+      --shadow: 0 10px 30px rgba(15, 77, 59, 0.08);
+      --bg: #f7fbf8;
+      --card-bg: #ffffff;
+      --accent-emerald: #10B981;
+    }
+
+    body.dark-mode {
+      --brand: #26a67e;
+      --brand-soft: #1a2e26;
+      --text: #e0e0e0;
+      --muted: #a0b0a8;
+      --line: #2d3d35;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      --bg: #070B0E;
+      --card-bg: #0D141C;
+    }
+
+    body{ font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: var(--bg); margin: 0; color: var(--text); transition: background 0.3s, color 0.3s; }
+    a{ text-decoration: none; color: inherit; }
+    .container{ width: min(1250px, calc(100% - 32px)); margin: 0 auto; }
+
+    /* Standard Platform Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+      background: var(--card-bg);
+    }
+    .nav-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 75px;
+      gap: 15px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 1.15rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      list-style: none;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.825rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text);
+    }
+    
+    .nav-auth-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Clean Button UI Styling */
+    .btn-nav{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      border: 1px solid var(--line);
+      background: var(--card-bg);
+      color: var(--text);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .btn-nav:hover {
+      border-color: var(--brand);
+      transform: translateY(-1px);
+    }
+    .btn-primary-custom{
+      background: var(--brand);
+      color: #fff;
+      border: none;
+    }
+    .btn-primary-custom:hover{
+      opacity: 0.9;
+    }
+
+    /* Dark Mode Toggle */
+    .theme-toggle { 
+      background: var(--brand-soft); 
+      color: var(--brand); 
+      border: 1px solid var(--line); 
+      width: 36px; 
+      height: 36px; 
+      border-radius: 50%; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 15px; 
+      flex-shrink: 0; 
+    }
+
+    /* Content Styling */
+    .main-content{ padding: 40px 0; }
+    .page-header { text-align: center; margin-bottom: 50px; }
+    .page-header h2 { color: var(--brand); font-size: 32px; margin-bottom: 10px; }
+
+    .class-grid{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 60px; }
+    .class-card{ background: var(--card-bg); border-radius: 24px; border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; }
+    .class-player{ position: relative; aspect-ratio: 16/9; background: #000; flex-shrink: 0; }
+    iframe{ width: 100%; height: 100%; border: 0; }
+
+    .lesson-list-container { padding: 15px; background: var(--card-bg); border-top: 1px solid var(--line); }
+    .lesson-header { font-weight: 800; font-size: 14px; color: var(--brand); margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .lesson-scroll { max-height: 220px; overflow-y: auto; }
+    .lesson-scroll::-webkit-scrollbar { width: 4px; }
+    .lesson-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 10px; }
+
+    .lesson-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; font-size: 13px; border: 1px solid transparent; margin-bottom: 5px; }
+    .lesson-item:hover { background: var(--brand-soft); border-color: var(--line); }
+    .lesson-icon { width: 24px; height: 24px; background: var(--brand-soft); color: var(--brand); border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 11px; flex-shrink: 0; }
+
+    /* Footer Styles */
+    .footer-wrapper { background: var(--card-bg); border-radius: 28px; padding: 30px; border: 1px solid var(--line); box-shadow: var(--shadow); margin-bottom: 40px; }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .footer-box { background: var(--brand-soft); border-radius: 20px; padding: 25px; }
+    .footer-box h4 { margin: 0 0 10px; color: var(--brand); font-size: 20px; }
+    .footer-box p { margin: 0 0 20px; font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .footer-btn { display: inline-block; background: var(--card-bg); color: var(--brand); padding: 10px 25px; border-radius: 999px; font-weight: 800; font-size: 14px; margin-right: 10px; border: 1px solid var(--line); }
+
+    @media (max-width: 1150px) { 
+      .class-grid, .footer-grid { grid-template-columns: 1fr; } 
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav>
+    <div class="container nav-content">
+      <a href="index.html" class="logo">
+        LizOn Education
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="ielts-tests.html">IELTS Hub</a></li>
+        <li><a href="1v1.html">1v1 Mentorship</a></li>
+        <li><a href="assessment.html">Free Diagnostic</a></li>
+        <li><a href="about.html">About Dhaka Hub</a></li>
+      </ul>
+      
+      <div class="nav-auth-wrap">
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme">🌓</button>
+        <a href="#mainGrid" class="btn-nav">IELTS Classes</a>
+        <a href="index.html" target="_blank" class="btn-nav btn-primary-custom">Join IELTS Course</a>
+        <a href="https://drive.google.com/drive/folders/1iDKSixrNURku84MiYkFirj39I4Y-bb-3" target="_blank" class="btn-nav">Resource Link</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container main-content">
+    <div class="page-header">
+      <h2>IELTS Full Class</h2>
+      <p>Start Your IELTS Preparation. Made with ❤️ for Bangladeshi students</p>
+    </div>
+
+    <!-- Class Grid Container -->
+    <div class="class-grid" id="mainGrid"></div>
+
+    <footer class="footer-wrapper">
+      <div class="footer-grid">
+        <div class="footer-box">
+          <h4>Contact & Location</h4>
+          <p>LizOn Education<br>51, Budhha Mandir Basabo, Dhaka 1214</p>
+          <a href="https://maps.app.goo.gl/JC9sikzCiSsQrNnH9" target="_blank" class="footer-btn">Open Map</a>
+          <a href="https://wa.me/8801611611139" target="_blank" class="footer-btn">WhatsApp</a>
+        </div>
+        <div class="footer-box">
+          <h4>LizOn Education</h4>
+          <p>Watch your IELTS playlists directly inside the site and get guidance when you are ready to join.</p>
+          <a href="https://www.facebook.com/" target="_blank" class="footer-btn">Facebook</a>
+          <a href="https://www.youtube.com/" target="_blank" class="footer-btn">YouTube</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('dark-mode') === 'enabled') { body.classList.add('dark-mode'); }
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        localStorage.setItem('dark-mode', body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
+      });
+    }
+
+    const courseData = [
+      {
+        title: "Listening IELTS Course",
+        category: "Listening",
+        lessons: [
+          { title: "IELTS Listening MAPS Made Easy", id: "Jk1_z3ZEP3w" },
+          { title: "IELTS Listening DOUBLE MCQ", id: "7Hw21qGzSfo" },
+          { title: "IELTS Listening MCQ Tricks", id: "vyDFMkBDPPM" },
+          { title: "Master IELTS Listening Part 4", id: "vNt0bZOT1rY" },
+          { title: "IELTS Listening Full Strategy", id: "Fg6bQ_kcs_A" },
+          { title: "Hidden Rule of Part 3 MCQ", id: "JWxE1t1xldo" },
+          { title: "Why You Lose Marks in Part 2", id: "Jw2B3r31OV" },
+          { title: "MATCHING | Full Band 9 Strategy", id: "RsOd9F6BCKY" },
+          { title: "No Starting Point in MAPS?", id: "K0FFnDsmJDE" }
+        ]
+      },
+      {
+        title: "Reading IELTS Course",
+        category: "Reading",
+        lessons: [
+          { title: "Reading Passage 1 Strategy", id: "9xhmVGWMZzQ" },
+          { title: "Reading Fill in the Blanks", id: "VV0cYZIMCiw" },
+          { title: "Heading Matching Guide", id: "mz8yXH0ATXw" },
+          { title: "Reading Question Answer Strategy", id: "F9UbZjrVx8I" },
+          { title: "Passage 3 Hardest Part", id: "NStYP_rhDIk" },
+          { title: "MCQ and Passage Plan", id: "u4BWY_ed9GE" },
+          { title: "Matching Statement Module", id: "76jp5A6lxZI" },
+          { title: "Summary Completion Tricks", id: "lORWHoRol-E" },
+          { title: "IELTS Reading Heading Matching", id: "-Vght6-Fihw" },
+          { title: "TFNG Time Saving Method", id: "EHLEpDr2V5g" },
+          { title: "Sentence Ending Strategy", id: "Hc72BOogLyU" },
+          { title: "Reading With Clues", id: "r-AJNiDiaH0" },
+          { title: "Reading Matching Information", id: "lIAjR-EB1SY" },
+          { title: "Upcoming Question Types", id: "ZE9yHqEv3Go" }
+        ]
+      },
+      {
+        title: "Speaking IELTS Course",
+        category: "Speaking",
+        lessons: [
+          { title: "Why students miss Speaking scores", id: "JU_FQXz6Kr8" },
+          { title: "Speaking Full Plan Practice", id: "y6qkHcb15bE" },
+          { title: "Speaking Part 3: Tips & Types", id: "Tv541X-mFBY" },
+          { title: "IELTS Speaking Part 2 Cue Card", id: "Gmchy83D6Ew" },
+          { title: "Cue Card: Topic Concentration", id: "D-ynqkOcA0Y" },
+          { title: "IELTS Speaking Part 1", id: "VdWhTuGeIkM" }
+        ]
+      },
+      {
+        title: "Writing Task 1 IELTS Course",
+        category: "Writing Task 1",
+        lessons: [
+          { title: "Pie Chart Guidelines", id: "Cx-4qHh3FvE" },
+          { title: "Task 1 Diagram Breakdown", id: "-PwpKbjst9E" },
+          { title: "Line Graph Strategy", id: "qaqnRbGQNaM" },
+          { title: "Maps Writing Task 1", id: "Lh8Yf9qfAtA" },
+          { title: "Line Graph & Bar Chart", id: "1HxWLXVVBzU" },
+          { title: "Bar Chart Strategy", id: "BZi0uL4hQfY" }
+        ]
+      },
+      {
+        title: "Writing Task 2 IELTS Course",
+        category: "Writing Task 2",
+        lessons: [
+          { title: "Structures & Planning", id: "d_HFFL8GA08" },
+          { title: "Writing like an Examiner", id: "ytbbfnndo0c" },
+          { title: "Structure for all types", id: "Tczb_96xnEs" }
+        ]
+      },
+      {
+        title: "Grammar IELTS Course",
+        category: "Grammar",
+        lessons: [
+          { title: "Grammar Linkers & A speaking reality check", id: "e9gopVn68RU" },
+          { title: "Grammar Voice Change", id: "hnIDJe00Vrc" },
+          { title: "Grammar Transformation of Sentences Assertive Interrogative", id: "scyrD8t0Mw4" },
+          { title: "Grammar Transformation of Sentences Affirmative Negative", id: "wIE3A41XOeo" },
+          { title: "Grammar Completing Sentences", id: "P2AiVZEUAQU" },
+          { title: "Friday Grammar Punctuation", id: "KwADPd_sb7o" },
+          { title: "Grammar Linking Words Why and How to Use", id: "Fecz29bNaHc" },
+          { title: "Grammar Connectives", id: "jP_WZ9eOiXM" },
+          { title: "Grammar Tense & Narration", id: "8I7-R_fSpoI" },
+          { title: "Grammar Completing Sentence with Various Structures", id: "wc8H0oke7Bs" },
+          { title: "Grammar class Degree", id: "zsKBoVu4elg" },
+          { title: "Tense and a little bit of Speaking", id: "KqPy-akMpwM" }
+        ]
+      },
+      {
+        title: "GT Letter Writing IELTS Course",
+        category: "GT Letter Writing",
+        lessons: [
+          { title: "Formal & Informal Letters", id: "qBKNoeVIkgg" }
+        ]
+      },
+      {
+        title: "Extra Bonus Class IELTS Course",
+        category: "Extra Bonus",
+        lessons: [
+          { title: "IELTS Idea Generating Method", id: "Q5UfIR7_YDw" },
+          { title: "Study Roadmap Each module", id: "SpziBBDYMa0" },
+          { title: "Full Exam Approach Strategy", id: "HqpV9zZov2w" }
+        ]
+      }
+    ];
+
+    const grid = document.getElementById("mainGrid");
+
+    function render(){
+      if (!grid) return;
+      grid.innerHTML = courseData.map((course, courseIdx) => `
+        <article class="class-card">
+          <div class="class-player" id="player-${courseIdx}">
+            <iframe src="https://www.youtube.com/embed/${course.lessons[0].id}?rel=0" allowfullscreen></iframe>
+          </div>
+          <div style="padding: 20px 20px 0;">
+            <span style="font-size: 11px; font-weight: 800; color: var(--brand); background: var(--brand-soft); padding: 4px 10px; border-radius: 999px;">${course.category}</span>
+            <h3 style="margin: 10px 0 5px; font-size: 18px;">${course.title}</h3>
+          </div>
+          <div class="lesson-list-container">
+            <div class="lesson-header"><span>COURSE CONTENT</span><span>${course.lessons.length} LESSONS</span></div>
+            <div class="lesson-scroll">
+              ${course.lessons.map((video, videoIdx) => `
+                <div class="lesson-item" onclick="changeVideo(${courseIdx}, '${video.id}')">
+                  <div class="lesson-icon">${videoIdx + 1}</div>
+                  <div style="flex: 1;">${video.title}</div>
+                  <div style="color: var(--brand); font-size: 1.15rem;">▶ Watch</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function changeVideo(courseIdx, videoId) {
+      const playerDiv = document.getElementById(`player-${courseIdx}`);
+      if (playerDiv) {
+        playerDiv.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" allowfullscreen></iframe>`;
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>

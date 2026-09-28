@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Diagnostic Assessment | LizOn Education</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070B0E;
+      --bg-card: rgba(18, 26, 33, 0.75);
+      --bg-card-hover: rgba(26, 37, 47, 0.9);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(16, 185, 129, 0.4);
+      --accent-emerald: #10B981;
+      --accent-amber: #F59E0B;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 750px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(7, 11, 14, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(7, 11, 14, 0.85);
+      width: 100%;
+    }
+    .nav-content {
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #FFF;
+      font-weight: 800;
+      font-size: 1.15rem;
+      white-space: nowrap;
+    }
+    .logo-badge {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+    }
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #FFF;
+    }
+
+    .nav-auth-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent-emerald);
+      color: #042F20;
+    }
+    .btn-primary:hover {
+      background: #34d399;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Assessment Header */
+    .page-header {
+      text-align: center;
+      padding: 48px 0 32px;
+    }
+    .page-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .page-header h1 span {
+      background: linear-gradient(135deg, #FFF 30%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Quiz Card Container */
+    .quiz-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 60px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 99px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--accent-emerald);
+      width: 20%;
+      transition: width 0.3s ease;
+    }
+
+    .question-step {
+      display: none;
+    }
+    .question-step.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .q-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-emerald);
+      margin-bottom: 8px;
+    }
+
+    .q-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #FFF;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .option-label:hover {
+      background: rgba(16, 185, 129, 0.06);
+      border-color: var(--border-active);
+    }
+    .option-label input[type="radio"] {
+      accent-color: var(--accent-emerald);
+      transform: scale(1.2);
+    }
+
+    .quiz-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 24px;
+    }
+
+    /* Results View */
+    .results-view {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .results-view.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+    .score-badge {
+      display: inline-block;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 16px 32px;
+      border-radius: 20px;
+      margin: 20px 0;
+    }
+    .results-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 550px;
+      margin: 0 auto 30px;
+    }
+    .results-cta {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 800px) {
+      .nav-links { display: none; }
+      .quiz-card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-content" style="max-width: 1200px;">
+      <a href="index.html" class="logo">
+        <div class="logo-badge"><i data-lucide="graduation-cap" style="width:18px;height:18px;"></i></div>
+        LizOn Education
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="ielts-tests.html">IELTS Hub</a></li>
+        <li><a href="1v1.html">1v1 Mentorship</a></li>
+        <li><a href="assessment.html" class="active" style="color: var(--accent-emerald);">Free Diagnostic</a></li>
+        <li><a href="about.html">About Dhaka Hub</a></li>
+      </ul>
+      
+      <div class="nav-auth-wrap" id="nav-auth-container">
+        <button onclick="openAuthModal()" class="btn btn-secondary">Login</button>
+        <a href="courses.html" class="btn btn-primary">Explore Courses</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="container page-header">
+    <h1>IELTS & PTE Level Checker<br><span>Discover Your Baseline Score.</span></h1>
+    <p>Answer 5 quick diagnostic questions to evaluate your current English proficiency and get targeted preparation recommendations.</p>
+  </header>
+
+  <!-- Main Quiz Card -->
+  <main class="container">
+    <div class="quiz-card">
+      
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <!-- Question 1 -->
+      <div class="question-step active" id="step-1">
+        <div class="q-number">Question 1 of 5</div>
+        <div class="q-title">How comfortable are you with reading long academic articles or essays within a tight time limit?</div>
+        <div class="options-list">
+          <label class="option-label"><input type="radio" name="q1" value="3"> I can scan quickly and grasp main arguments easily (Band 7.0+)</label>
+          <label class="option-label"><input type="radio" name="q1" value="2"> I understand most parts but struggle with unfamiliar vocabulary under time pressure (Band 6.0 - 6.5)</label>
+          <label class="option-label"><input type="radio" name="q1" value="1"> I translate word-for-word and frequently run out of time (Band 5.0 or below)</label>
+        </div>
+        <div class="quiz-actions">
+          <div></div>
+          <button onclick="nextStep(1)" class="btn btn-primary">Next Question →</button>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="question-step" id="step-2">
+        <div class="q-number">Question 2 of 5</div>
+        <div class="q-title">When listening to native speakers or fast audio lectures, how well do you catch specific details?</div>
+        <div class="options-list">
+          <label class="option-label"><input type="radio" name="q2" value="3"> I catch almost everything effortlessly on the first playback (Band 7.5+)</label>
+          <label class="option-label"><input type="radio" name="q2" value="2"> I follow the main structure well, but miss spelling or fast-paced synonyms sometimes (Band 6.0 - 6.5)</label>
+          <label class="option-label"><input type="radio" name="q2" value="1"> I lose track easily once the speaker changes topics quickly (Band 5.0 or below)</label>
+        </div>
+        <div class="quiz-actions">
+          <button onclick="prevStep(2)" class="btn btn-secondary">← Back</button>
+          <button onclick="nextStep(2)" class="btn btn-primary">Next Question →</button>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="question-step" id="step-3">
+        <div class="q-number">Question 3 of 5</div>
+        <div class="q-title">How do you normally approach writing essays or task reports?</div>
+        <div class="options-list">
+          <label class="option-label"><input type="radio" name="q3" value="3"> I use complex grammatical structures, clear paragraphs, and precise vocabulary</label>
+          <label class="option-label"><input type="radio" name="q3" value="2"> I write decent sentences, but sometimes make minor slip-ups with grammar or task cohesion</label>
+          <label class="option-label"><input type="radio" name="q3" value="1"> I struggle to generate ideas and often repeat simple sentence structures</label>
+        </div>
+        <div class="quiz-actions">
+          <button onclick="prevStep(3)" class="btn btn-secondary">← Back</button>
+          <button onclick="nextStep(3)" class="btn btn-primary">Next Question →</button>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="question-step" id="step-4">
+        <div class="q-number">Question 4 of 5</div>
+        <div class="q-title">How confident are you speaking fluently on abstract or unfamiliar topics without long pauses?</div>
+        <div class="options-list">
+          <label class="option-label"><input type="radio" name="q4" value="3"> Highly confident; I speak smoothly with natural idioms and correct phrasing</label>
+          <label class="option-label"><input type="radio" name="q4" value="2"> Fairly confident, though I occasionally hesitate to search for the right word</label>
+          <label class="option-label"><input type="radio" name="q4" value="1"> Not very confident; I stop often and rely heavily on basic words</label>
+        </div>
+        <div class="quiz-actions">
+          <button onclick="prevStep(4)" class="btn btn-secondary">← Back</button>
+          <button onclick="nextStep(4)" class="btn btn-primary">Next Question →</button>
+        </div>
+      </div>
+
+      <!-- Question 5 -->
+      <div class="question-step" id="step-5">
+        <div class="q-number">Question 5 of 5</div>
+        <div class="q-title">What is your primary goal or target timeline for your exam?</div>
+        <div class="options-list">
+          <label class="option-label"><input type="radio" name="q5" value="3"> Band 7.0+ for university admission or migration within 2–3 months</label>
+          <label class="option-label"><input type="radio" name="q5" value="2"> Band 6.5 standard requirement for general programs</label>
+          <label class="option-label"><input type="radio" name="q5" value="1"> Just starting out and need foundational guidance from scratch</label>
+        </div>
+        <div class="quiz-actions">
+          <button onclick="prevStep(5)" class="btn btn-secondary">← Back</button>
+          <button onclick="calculateResults()" class="btn btn-primary">Calculate My Level →</button>
+        </div>
+      </div>
+
+      <!-- Results View -->
+      <div class="results-view" id="resultsView">
+        <div class="q-number">Assessment Complete</div>
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 6px;">Your Estimated Baseline Level</h2>
+        <div class="score-badge" id="scoreOutput">Band 6.0 - 6.5</div>
+        <p class="results-desc" id="scoreDescription">You have a solid foundational grasp of English! With targeted structure training in reading speed and writing frameworks, you are fully positioned to reach your target band score rapidly.</p>
+        
+        <div class="results-cta">
+          <a href="courses.html" class="btn btn-primary">Explore Preparation Courses</a>
+          <a href="1v1.html" class="btn btn-secondary">Book 1v1 Mentorship Session</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    function updateProgress(step) {
+      const pct = (step / 5) * 100;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+    }
+
+    function nextStep(current) {
+      const selected = document.querySelector(`input[name="q${current}"]:checked`);
+      if (!selected) {
+        alert('Please select an option before proceeding.');
+        return;
+      }
+      document.getElementById(`step-${current}`).classList.remove('active');
+      const next = current + 1;
+      document.getElementById(`step-${next}`).classList.add('active');
+      updateProgress(next);
+    }
+
+    function prevStep(current) {
+      document.getElementById(`step-${current}`).classList.remove('active');
+      const prev = current - 1;
+      document.getElementById(`step-${prev}`).classList.add('active');
+      updateProgress(prev);
+    }
+
+    function calculateResults() {
+      const selected = document.querySelector('input[name="q5"]:checked');
+      if (!selected) {
+        alert('Please select an option before viewing results.');
+        return;
+      }
+
+      // Calculate score based on inputs
+      let total = 0;
+      for (let i = 1; i <= 5; i++) {
+        const radio = document.querySelector(`input[name="q${i}"]:checked`);
+        if (radio) total += parseInt(radio.value);
+      }
+
+      // Hide last step
+      document.getElementById('step-5').classList.remove('active');
+      document.getElementById('progressBar').style.width = '100%';
+
+      const out = document.getElementById('scoreOutput');
+      const desc = document.getElementById('scoreDescription');
+
+      if (total >= 12) {
+        out.textContent = "Band 7.0 - 7.5+ (Advanced)";
+        desc.textContent = "You show strong language instincts and high comprehension. Focus on advanced exam strategies, timed mock tests, and error elimination to secure your desired score.";
+      } else if (total >= 8) {
+        out.textContent = "Band 6.0 - 6.5 (Intermediate)";
+        desc.textContent = "You have a solid foundation! With structured module training, sentence variety improvement, and regular evaluation, you are fully ready to cross the Band 7.0 threshold.";
+      } else {
+        out.textContent = "Band 5.0 - 5.5 (Foundational)";
+        desc.textContent = "You will benefit greatly from starting with core grammar, vocabulary building, and step-by-step module breakdowns with our expert instructors.";
+      }
+
+      document.getElementById('resultsView').classList.add('active');
+    }
+
+    // Session Management for Navbar
+    if (typeof supabase !== 'undefined') {
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          const container = document.getElementById('nav-auth-container');
+          const isAdmin = user.email === 'swapnil7kuri@gmail.com';
+          container.innerHTML = `
+            <a href="${isAdmin ? 'admin.html' : 'ielts-tests.html'}" class="btn btn-secondary">
+              ${isAdmin ? 'Admin Panel' : 'My Tests'}
+            </a>
+            <button onclick="supabase.auth.signOut().then(() => location.reload())" class="btn btn-secondary" style="color: #94A3B8;">
+              Sign Out
+            </button>
+          `;
+        }
+      }).catch(err => console.log('Auth check skipped:', err));
+    }
+  </script>
+  
+  <script src="auth-modal.js"></script>
+</body>
+</html>

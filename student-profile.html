@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard | LizOn Education</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070B0E;
+      --bg-surface: #0E161E;
+      --bg-card: rgba(18, 26, 33, 0.75);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(16, 185, 129, 0.4);
+      --accent-emerald: #10B981;
+      --accent-red: #EF4444;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .ambient-glow {
+      position: fixed;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 750px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(7, 11, 14, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(7, 11, 14, 0.85);
+      width: 100%;
+    }
+    .nav-content {
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 75px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #FFF;
+      font-weight: 800;
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+    .logo-badge {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+    }
+    .nav-links {
+      display: flex;
+      gap: 26px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #FFF; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent-emerald);
+      color: #042F20;
+    }
+    .btn-primary:hover {
+      background: #34d399;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Main Content Wrapper */
+    .main-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard-wrapper {
+      width: 100%;
+      max-width: 1000px;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      overflow: hidden;
+      min-height: 580px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      background: rgba(11, 17, 23, 0.5);
+    }
+    .user-profile-header {
+      padding: 28px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      color: #042F20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.3rem;
+      margin: 0 auto 10px;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+    .username-txt { font-weight: 700; font-size: 0.95rem; color: #FFF; word-break: break-all; }
+
+    .nav-menu { list-style: none; display: flex; flex-direction: column; padding: 10px 0; }
+    .nav-item {
+      padding: 14px 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .nav-item:hover { color: #FFF; background: rgba(255,255,255,0.02); }
+    .nav-item.active { background: rgba(16, 185, 129, 0.12); color: var(--accent-emerald); border-right: 3px solid var(--accent-emerald); }
+
+    /* Content Pane */
+    .content-pane { padding: 36px; overflow-y: auto; max-height: 680px; }
+    .pane-section { display: none; }
+    .pane-section.active { display: block; animation: fadeIn 0.2s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; color: #FFF; }
+    .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle); }
+
+    .banner-promo {
+      border: 1px dashed rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.08);
+      color: #F87171;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .form-group { margin-bottom: 16px; position: relative; }
+    .form-label { display: block; font-weight: 700; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .form-input { width: 100%; background: #070B0E; border: 1px solid var(--border-subtle); color: #FFF; padding: 11px 16px; border-radius: 10px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .form-input:focus { border-color: var(--accent-emerald); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; margin-top: 10px; }
+    th { background: #0A0F14; padding: 12px 16px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--border-subtle); }
+    td { padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); color: #E2E8F0; }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .dashboard-wrapper { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- Top Navigation Bar -->
+  <nav>
+    <div class="nav-content">
+      <a href="index.html" class="logo">
+        <div class="logo-badge"><i data-lucide="graduation-cap" style="width:20px;height:20px;"></i></div>
+        <div>LizOn Education</div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="ielts-tests.html">IELTS Hub</a></li>
+        <li><a href="1v1.html">1v1 Mentorship</a></li>
+        <li><a href="assessment.html">Free Diagnostic</a></li>
+        <li><a href="about.html">About Dhaka Hub</a></li>
+      </ul>
+      <div>
+        <a href="ielts-tests.html" class="btn btn-primary">IELTS Tests</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Container -->
+  <div class="main-container">
+    <div class="dashboard-wrapper">
+      
+      <!-- Sidebar Navigation -->
+      <div class="sidebar">
+        <div class="user-profile-header">
+          <div class="avatar" id="sidebarAvatar">U</div>
+          <div class="username-txt" id="sidebarName">student</div>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item active" onclick="switchTab('subscription', this)">Subscription</li>
+          <li class="nav-item" onclick="switchTab('progress', this)">Progress</li>
+          <li class="nav-item" onclick="switchTab('review', this)">Review Mistakes</li>
+          <li class="nav-item" onclick="switchTab('account', this)">Account</li>
+          <li class="nav-item" onclick="switchTab('password', this)">Password</li>
+          <li class="nav-item" style="color: var(--accent-red);" onclick="handleLogout()">Log Out</li>
+        </ul>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="content-pane">
+
+        <!-- 1. Subscription Tab -->
+        <div class="pane-section active" id="sec-subscription">
+          <h2>Subscription</h2>
+          <p class="subtitle">View your subscription status here.</p>
+          
+          <div class="banner-promo">
+            🚀 Act Fast! Only 02h:40m:37s left for 30% OFF on Our Premium Plan!
+          </div>
+
+          <p style="font-size: 0.875rem; margin-bottom: 12px; color: var(--text-muted);">
+            If you have a <span style="color:var(--accent-emerald); font-weight:600;">premium activation code</span>, enter it below to activate or extend your subscription:
+          </p>
+
+          <div class="form-group">
+            <input type="text" class="form-input" placeholder="Activation Code..." id="activationCode" />
+          </div>
+          <button class="btn btn-primary" onclick="alert('Activation code feature coming soon!')">Activate Premium</button>
+        </div>
+
+        <!-- 2. Progress Tab -->
+        <div class="pane-section" id="sec-progress">
+          <h2>Progress</h2>
+          <p class="subtitle">Your completed exam attempts and performance history.</p>
+          
+          <div id="progressContent">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Loading your exam progress...</p>
+          </div>
+        </div>
+
+        <!-- 3. Review Mistakes Tab -->
+        <div class="pane-section" id="sec-review">
+          <h2>Review Mistakes</h2>
+          <p class="subtitle">Analyze and re-practice questions you missed.</p>
+          
+          <div id="reviewContent">
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+              No saved mistakes yet. Once you take part in an IELTS test or quiz, any missed questions will appear here for you to review and re-practice.
+            </p>
+          </div>
+        </div>
+
+        <!-- 4. Account Tab -->
+        <div class="pane-section" id="sec-account">
+          <h2>Account</h2>
+          <p class="subtitle">Edit your account details here.</p>
+          
+          <form onsubmit="updateProfile(event)">
+            <div class="form-group">
+              <label class="form-label">Full Name:</label>
+              <input type="text" class="form-input" id="accFullName" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address:</label>
+              <input type="email" class="form-input" id="accEmail" disabled style="opacity: 0.6; cursor: not-allowed;" />
+              <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; display:block;">To change your email address, please contact our support team.</small>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Update Profile</button>
+          </form>
+        </div>
+
+        <!-- 5. Password Tab with Min 6 Characters, Retype & Eye Toggles -->
+        <div class="pane-section" id="sec-password">
+          <h2>Password</h2>
+          <p class="subtitle">Securely update your account password.</p>
+          
+          <form onsubmit="updatePassword(event)">
+            <div class="form-group">
+              <label class="form-label">New Password (Min 6 Characters):</label>
+              <div style="position: relative;">
+                <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" minlength="6" required style="padding-right: 42px;" />
+                <button type="button" onclick="togglePass('newPassword', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem;" title="Show/Hide">👁️</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Retype New Password (Min 6 Characters):</label>
+              <div style="position: relative;">
+                <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password" minlength="6" required style="padding-right: 42px;" />
+                <button type="button" onclick="togglePass('confirmPassword', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem;" title="Show/Hide">👁️</button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Update Password</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function switchTab(tabId, element) {
+      document.querySelectorAll('.pane-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+      document.getElementById('sec-' + tabId).classList.add('active');
+      if(element) element.classList.add('active');
+    }
+
+    function togglePass(fieldId, btn) {
+      const input = document.getElementById(fieldId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.style.opacity = '1';
+      } else {
+        input.type = 'password';
+        btn.style.opacity = '0.6';
+      }
+    }
+
+    async function loadUserData() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = 'auth.html';
+        return;
+      }
+
+      const email = user.email;
+      const fullName = user.user_metadata?.full_name || email.split('@')[0];
+
+      document.getElementById('sidebarName').innerText = fullName;
+      document.getElementById('sidebarAvatar').innerText = fullName.charAt(0).toUpperCase();
+      document.getElementById('accEmail').value = email;
+      document.getElementById('accFullName').value = fullName;
+
+      // Fetch student exam progress records
+      const { data: exams, error } = await supabase
+        .from('exam_results')
+        .select('*')
+        .eq('user_email', email)
+        .order('completed_at', { ascending: false });
+
+      const progressDiv = document.getElementById('progressContent');
+
+      if (!exams || exams.length === 0) {
+        progressDiv.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">No exam attempts recorded yet. Take part in any IELTS test to see your progress here!</p>`;
+      } else {
+        let tableHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>Test Name</th>
+                <th>Score</th>
+                <th>Percentage</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        exams.forEach(ex => {
+          tableHTML += `
+            <tr>
+              <td><strong>${ex.test_name}</strong></td>
+              <td><span style="color: var(--accent-emerald); font-weight:700;">${ex.score}</span></td>
+              <td>${ex.percentage}%</td>
+              <td>${new Date(ex.completed_at).toLocaleDateString()}</td>
+            </tr>
+          `;
+        });
+        tableHTML += `</tbody></table>`;
+        progressDiv.innerHTML = tableHTML;
+      }
+    }
+
+    async function updateProfile(e) {
+      e.preventDefault();
+      const newName = document.getElementById('accFullName').value;
+
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: newName }
+      });
+
+      if (error) {
+        alert('Error updating profile: ' + error.message);
+      } else {
+        alert('Profile updated successfully!');
+        loadUserData();
+      }
+    }
+
+    async function updatePassword(e) {
+      e.preventDefault();
+      const password = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters long.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('New passwords do not match. Please retype correctly.');
+        return;
+      }
+
+      const { error } = await supabase.auth.updateUser({ password: password });
+
+      if (error) {
+        alert('Error updating password: ' + error.message);
+      } else {
+        alert('Password updated successfully!');
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+      }
+    }
+
+    async function handleLogout() {
+      await supabase.auth.signOut();
+      window.location.href = 'auth.html';
+    }
+
+    loadUserData();
+  </script>
+</body>
+</html>
